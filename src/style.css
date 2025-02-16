@@ -1,0 +1,229 @@
+  .appTextColor {
+    color: #355ba6;
+  }
+  
+  .appBackgroundColor {
+    color: #355ba6;
+  }
+  .headerCyanText {
+    color: #5b9fab;
+  }
+  .cyanBackground {
+    background-color: #5b9fab;
+  }
+  
+  .creamBackground {
+    background-color: #fefafa;
+  }
+  
+  .iconSectionBlue {
+    background-color: #e4f3fe;
+  }
+  
+  .iconSectionYellow {
+    background-color: #fceb54;
+  }
+  
+  .aThousandZindex {
+    /* because the z index of the map and its icon was 999 */
+    z-index: 1000;
+  }
+  
+  .blink {
+    animation: blink 2s infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+ 
+  
+  /* SWITCH */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 2px;
+  }
+  
+  .switch.active {
+    background-color: #355ba6;
+  }
+  
+  .switch-handle {
+    position: absolute;
+    top: 2.6px;
+    left: 2.6px;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.2s;
+  }
+  
+  .switch.active .switch-handle {
+    transform: translateX(22px);
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .charterBlueText {
+    color: #355ba6;
+  }
+  
+  .charterBlueBackground {
+    color: #355ba6;
+  }
+  .headerCayanText {
+    color: #5b9fab;
+  }
+  .cayanBackground {
+    background-color: #5b9fab;
+  }
+  
+  .creamBackground {
+    background-color: #fefafa;
+  }
+  
+  .iconSectionBlue {
+    background-color: #e4f3fe;
+  }
+  
+  .iconSectionYellow {
+    background-color: #fceb54;
+  }
+  
+  .aThousandZindex {
+    /* because the z index of the map and its icon was 999 */
+    z-index: 1000;
+  }
+  
+  .blink {
+    animation: blink 2s infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  /* MAP */
+  .leaflet-control-attribution {
+    display: none;
+  }
+  .leaflet-top {
+    z-index: 499 !important;
+  }
+  
+  .pointers {
+    cursor: pointer;
+  }
+  
+  .scrolMaxHeight300 {
+    overflow-y: auto;
+    max-height: 280px;
+  }
+  
+  /* OVERLY */
+  .overlayWhenViewNavigationIsOpen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 500;
+  }
+  
+  
+  .dashboardTicketScreen{
+    max-height: 394px;
+    overflow-x: scroll;
+  }
+  
+  
+  .leaflet-container{
+    z-index:1
+  }
+  
+  /* SWITCH */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 2px;
+  }
+  
+  .switch.active {
+    background-color: #355ba6;
+  }
+  
+  .switch-handle {
+    position: absolute;
+    top: 2.6px;
+    left: 2.6px;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.2s;
+  }
+  
+  .switch.active .switch-handle {
+    transform: translateX(22px);
+  }
+  
