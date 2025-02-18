@@ -1,10 +1,11 @@
 import {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { IoTicket } from "react-icons/io5";
 import { BsStack } from "react-icons/bs";
 import { LiaRouteSolid } from "react-icons/lia";
 import { LuLogOut } from "react-icons/lu";
+
+import { MdOutlineCreateNewFolder } from "react-icons/md";
 
 import Header from "../components/header";
 
@@ -34,20 +35,28 @@ export default function Dashboard() {
         <Header />
 
         <div className="h-14"></div>
+
+        <div className="ps-5 h-1/6 flex items-end">
+          <h1 className="mainFont ps-2">
+            <span className="appTextColor me-1 text-4xl">Dashboa</span>
+            <span className="outlined-text-medium-thin text-7xl ">rd</span>
+          </h1>
+        </div>
+
         <div className="px-2 pt-0.5">
           <div className="mt-2 pt-2.5 rounded-md border bg-white flex justify-around overflow-visibl">
             <div>
               <div className="w-20 h-20 p-2">
                 <div
                   className="w-full h-full iconSectionBlue border shadow-sm flex justify-center items-center rounded-lg"
-                  onClick={() => navigate(client.scanBusNumber)}
+                  onClick={() => navigate(client.formCreation)}
                 >
-                  <IoTicket className="text-4xl" />
+                  <MdOutlineCreateNewFolder className="text-4xl" />
                 </div>
               </div>
               <div className="text-center">
                 <h6 className="font-medium text-lg">
-                  Bus <br /> Ticket
+                  Create <br/> Survey
                 </h6>
               </div>
             </div>
@@ -61,7 +70,7 @@ export default function Dashboard() {
               <div className="w-20 h-20 p-2">
                 <div
                   className="w-full h-full iconSectionYellow border shadow-sm flex justify-center items-center rounded-lg"
-                  onClick={() => navigate(client.route)}
+                  // onClick={() => navigate(client.route)}
                 >
                   <LiaRouteSolid className="text-4xl" />
                 </div>

@@ -40,7 +40,7 @@ export default async function axiosInterceptor({
     if (!url) throw new Error("Url not provided");
 
     const apiMethod = method.toLowerCase().trim();
-    let apiUrl = "http://192.168.131.92:3031/api";
+    let apiUrl = "http://localhost:3031/api";
     // let apiUrl = "http://192.168.15.92:3011/api";
     // let apiUrl = "http://localhost:3011/api";
     // let apiUrl = "https://charter-backend.lambaharsh01.in/api";

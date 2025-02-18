@@ -9,9 +9,8 @@ const Header: React.FC = () => {
       <img
         src={appIcon}
         alt="app-icon"
-        className="h-14"
+        className="h-8"
       />
-
       <img
         src={profileIcon}
         alt="profile-icon"

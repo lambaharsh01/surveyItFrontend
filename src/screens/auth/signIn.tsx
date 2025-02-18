@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { client } from "../../constants/urlPath";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import axiosInterceptor from "../../utils/axiosInterceptor";
 import { toast } from "react-toastify";
 import { setToken } from "../../utils/setLocalStorage";
+
+import { localStorageItems } from "../../constants/localStorageDataDictionary";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +16,15 @@ const SignIn: React.FC = () => {
 
   const [disabled, setDisabled] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  useEffect(()=>{
+
+    const token = localStorage.getItem(localStorageItems.token);
+    if (token){
+      navigate(client.dashboard, { replace: true });
+    }
+    
+  }, [])
 
   const authenticateUser = () => {
     

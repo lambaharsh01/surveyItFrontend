@@ -9,6 +9,7 @@ import Dashboard from "./screens/dashboard";
 import SignIn from "./screens/auth/signIn";
 import SignUp from "./screens/auth/signUp";
 import ForgotPassword from "./screens/auth/forgotPassword";
+import FormCreation from "./screens/form/surveyCreation";
 
 
 
@@ -31,6 +32,7 @@ function Routing() {
           <Route path={client.signIn} element={<SignIn />} />
           <Route path={client.signUp} element={<SignUp />} />
           <Route path={client.forgotPassword} element={<ForgotPassword />} /> 
+          <Route path={client.formCreation} element={<FormCreation />} /> 
 
         </Routes>
       </BrowserRouter>

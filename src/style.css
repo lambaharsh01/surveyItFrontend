@@ -1,9 +1,11 @@
   .appTextColor {
-    color: #355ba6;
+    /* color: #355ba6; */
+    color: #FFC61B;
   }
   
   .appBackgroundColor {
-    color: #355ba6;
+    /* color: #355ba6; */
+    background-color: #FFC61B;
   }
   .headerCyanText {
     color: #5b9fab;
@@ -111,9 +113,13 @@
   .charterBlueBackground {
     color: #355ba6;
   }
-  .headerCayanText {
+  /* .headerCayanText {
     color: #5b9fab;
+  } */
+  .dropdownSelected {
+    color: #FFC61B
   }
+
   .cayanBackground {
     background-color: #5b9fab;
   }
