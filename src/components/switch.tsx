@@ -1,12 +1,9 @@
 import { useState } from 'react';
-
-interface SwitchProps {
-  onChange: (checked: boolean) => void;
-  checked: boolean;
-}
+import "../styles/switch.css"
+import { SwitchProps } from '../models/propInterfaces';
 
 const Switch: React.FC<SwitchProps> = ({ onChange, checked: initialChecked }) => {
-  const [checked, setChecked] = useState(initialChecked);
+  const [checked, setChecked] = useState<boolean>(initialChecked);
 
   const handleClick = () => {
     setChecked(!checked);
