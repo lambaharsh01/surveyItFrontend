@@ -41,12 +41,11 @@ export default async function axiosInterceptor({
 
     const apiMethod = method.toLowerCase().trim();
     let apiUrl = "http://localhost:3031/api";
-    // let apiUrl = "http://192.168.15.92:3011/api";
-    // let apiUrl = "http://localhost:3011/api";
-    // let apiUrl = "https://charter-backend.lambaharsh01.in/api";
+    // let apiUrl = "http://192.168.0.135:3031/api";
     apiUrl += url.trim() + convertQueryString(query);
 
     const axiosInstance: AxiosInstance = axios.create();
+    // npm run dev -- --host 192.168.0.135
 
     axiosInstance.interceptors.request.use(
       (req: InternalAxiosRequestConfig) => {

@@ -44,7 +44,7 @@ export default function Dashboard() {
         </div>
 
         <div className="px-2 pt-0.5">
-          <div className="mt-2 pt-2.5 rounded-md border bg-white flex justify-around overflow-visibl">
+          <div className="mt-2 pt-2.5 rounded-md border bg-white flex justify-around overflow-visible">
             <div>
               <div className="w-20 h-20 p-2">
                 <div
@@ -56,7 +56,7 @@ export default function Dashboard() {
               </div>
               <div className="text-center">
                 <h6 className="font-medium text-lg">
-                  Create <br/> Survey
+                  Surveys
                 </h6>
               </div>
             </div>

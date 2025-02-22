@@ -11,18 +11,9 @@ export interface RespondentDetail {
     position: string;
 }
 
-export interface SurveyProps {
-  questions: Question[];
-  onSubmit: (responses: { question: string; rating: number }[]) => void;
-}
-
-export interface RespondentProp {
-  onSubmit: (responses: { question: string; rating: number }[]) => void;
-}
-
 export interface QuestionTypeStructure{
   id: number;
-  questionAcceptedAs: string
+  questionType: string
   questionTypeLabel: string
 }
 
@@ -34,9 +25,14 @@ export interface FileTypeStructure{
 
 export interface QuestionStructure {
   text: string;
-  type: QuestionTypeStructure | null;
-  fileType: FileTypeStructure | null;
+  questionTypeId: number | null;
+  questionType: string | null;
+  fileTypeId: number | null;
+  fileType: string | null;
   options: string[];
   required: boolean;
+  validation: boolean;
+  min: number;
+  max: number;
 }
 

@@ -53,66 +53,17 @@
     }
   }
   
+  
+
+
+
+
+
+
+
+
+
  
-  
-  /* SWITCH */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 48px;
-    height: 25px;
-    background-color: #ccc;
-    border-radius: 12px;
-    cursor: pointer;
-    padding: 2px;
-  }
-  
-  .switch.active {
-    background-color: #355ba6;
-  }
-  
-  .switch-handle {
-    position: absolute;
-    top: 2.6px;
-    left: 2.6px;
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    transition: 0.2s;
-  }
-  
-  .switch.active .switch-handle {
-    transform: translateX(22px);
-  }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  .charterBlueText {
-    color: #355ba6;
-  }
-  
-  .charterBlueBackground {
-    color: #355ba6;
-  }
   /* .headerCayanText {
     color: #5b9fab;
   } */
@@ -202,34 +153,4 @@
     z-index:1
   }
   
-  /* SWITCH */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 48px;
-    height: 25px;
-    background-color: #ccc;
-    border-radius: 12px;
-    cursor: pointer;
-    padding: 2px;
-  }
-  
-  .switch.active {
-    background-color: #355ba6;
-  }
-  
-  .switch-handle {
-    position: absolute;
-    top: 2.6px;
-    left: 2.6px;
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    transition: 0.2s;
-  }
-  
-  .switch.active .switch-handle {
-    transform: translateX(22px);
-  }
   
