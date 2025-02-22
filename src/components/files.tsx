@@ -37,9 +37,9 @@ const Files: React.FC<FilesPropInterface> = ({ onChange, fileType }) => {
   };
 
   return (
-    <div className="flex items-center w-full border-b border-gray-400 cursor-pointer">
+    <div className="flex items-center w-full border-b mb-4 border-gray-400 cursor-pointer">
       <div 
-        className="px-3 py-3 w-1/2 bg-slate-200 text-gray-700 hover:bg-gray-300"
+        className="px-3 py-3 w-1/2 bg-slate-100 text-gray-700 hover:bg-gray-200"
         onClick={() => fileInputRef.current?.click()}
       >
         Choose File

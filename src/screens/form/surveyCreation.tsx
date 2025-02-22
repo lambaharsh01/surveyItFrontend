@@ -285,7 +285,7 @@ const FormCreation: React.FC = () => {
                     </span>
                   </div>
                   <textarea
-                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100"
+                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
                     rows={5}
                     placeholder="Enter Question"
                     value={question.text}
@@ -336,7 +336,7 @@ const FormCreation: React.FC = () => {
                       <div className="flex" key={"option" + index}>
                         <input
                           type="text"
-                          className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
+                          className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100 hover:bg-gray-200"
                           placeholder="Enter Option Label"
                           value={elem}
                           onChange={(e) => handleAddOptionChange(e, index)}

@@ -38,7 +38,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
   }
 
   return ( 
-    <motion.div 
+  <motion.div 
     key={index} 
     className="mb-4 border-b-2"
     initial={{ opacity: 0, x: -10 }}
@@ -53,8 +53,8 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
       <div className="w-full px-2">
         <input
           type="text"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100"
-          placeholder="Input Response..."
+          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
+          placeholder="Enter"
           value={value}
           onChange={setTextInputValue}
         />
@@ -65,35 +65,42 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
       <div className="w-full px-2">
         <textarea
           rows={3}
-          className="px-3 py-3 mb-4 w-100 bg-slate-100"
-          placeholder="Input Response..."
+          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
+          placeholder="Enter"
           value={value}
           onChange={setTextareaInputValue}
         />
       </div>
     )}
 
-
-    {questionType==="textarea" && (
-      <div className="w-full px-2">
-        <textarea
-          rows={3}
-          className="px-3 py-3 mb-4 w-100 bg-slate-100"
-          placeholder="Input Response..."
-          value={value}
-          onChange={setTextareaInputValue}
-        />
-      </div>
-    )}
-    
     {questionType==="number" && (
       <div className="w-full px-2">
         <input
           type="number"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100"
-          placeholder="Input Response..."
+          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
+          placeholder="Enter"
           value={value}
           onChange={setTextInputValue}
+        />
+      </div>
+    )}
+
+    {questionType==="date" && (
+      <div className="w-full px-2">
+        <input
+          type="date"
+          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
+          value={value}
+          onChange={setTextInputValue}
+        />
+      </div>
+    )}
+
+    {questionType==="star" && (
+      <div className="w-full px-2">
+        <Stars
+          questionAlignment={questionAlignment}
+          onChange={handleStringedResponseAfterChange}
         />
       </div>
     )}
@@ -118,27 +125,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
         />
       </div>
     )}
-
-    {questionType==="date" && (
-      <div className="w-full px-2">
-        <input
-          type="date"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100"
-          value={value}
-          onChange={setTextInputValue}
-        />
-      </div>
-    )}
-
-    {questionType==="star" && (
-      <div className="w-full px-2">
-        <Stars
-          questionAlignment={questionAlignment}
-          onChange={handleStringedResponseAfterChange}
-        />
-      </div>
-    )}
-
+    
     {questionType==="file" && (
       <div className="w-full px-2">
         <Files
