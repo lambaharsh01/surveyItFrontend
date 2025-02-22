@@ -1,26 +1,19 @@
 import { ChangeEvent ,useEffect, useState } from "react";
 import { flushSync } from "react-dom";
-// import { useNavigate } from "react-router-dom";
-
 import { MdAddToPhotos } from "react-icons/md";
 
 import Header from "../../components/header";
+import DropdownSearch from "../../components/dropdownSearch";
+import QuestionSection from "../../components/questionSection";
+import Switch from "../../components/switch";
 
 import { toast } from "react-toastify";
 
 import convertArrayIntoSearchStream from "../../utils/convertArrayIntoSearchStream";
-import DropdownSearch from "../../components/dropdownSearch";
-
 import axiosInterceptor from "../../utils/axiosInterceptor";
 
 import { QuestionTypeStructure, FileTypeStructure, QuestionStructure } from "../../models/surveyInterface";
-
-import QuestionSection from "../../components/questionSection";
-import Switch from "../../components/switch";
-
-import Checkboxes from "../../components/checkboxes";
-import { div, span } from "framer-motion/client";
-
+import { optionsKeywords, validationKeywords } from "../../utils/constants";
 
 
 const FormCreation: React.FC = () => {
@@ -28,15 +21,17 @@ const FormCreation: React.FC = () => {
   // const navigate = useNavigate();
 
   const emptyQuestionStructure: QuestionStructure = {
-    text:"",
-    questionTypeId:0,
-    questionType:"",
-    fileTypeId:0,
-    fileType:"",
-    options:[],
-    required:true
+    text: "",
+    questionTypeId: 0,
+    questionType: "",
+    fileTypeId: 0,
+    fileType: "",
+    options: [],
+    required: true,
+    validation: false,
+    min: 0,
+    max: 0,
   }
-  const optionsKeywords: string[] = ["checkbox", "select", "radio"]
 
   const [questions, setQuestions] = useState<QuestionStructure[]>([])
   const [question, setQuestion] = useState<QuestionStructure>(structuredClone(emptyQuestionStructure))
@@ -123,6 +118,13 @@ const FormCreation: React.FC = () => {
     })
   }
 
+
+  const handleQuestionValidationChange = (checked: boolean):void => {
+    setQuestion(prev=>{
+      return {...prev, validation: checked}
+    })
+  }
+
   const handleRemoveOptionChange = (index:number):void =>{
     setQuestion(prev=>{
       prev.options.splice(index,1)
@@ -160,6 +162,11 @@ const FormCreation: React.FC = () => {
           return
       }
 
+    }
+
+    if(question.validation && (question.min===0 || question.max===0)){
+      toast.warning("minimum / maximum can not be 0")
+      return
     }
 
 
@@ -218,24 +225,19 @@ const FormCreation: React.FC = () => {
             </button>
           </div>
 
-            <div className="w-100 pt-3 ps-3">
-
-              {questions.map((elem, index)=>(
-                <QuestionSection
-                  identifier = {index}
-                  text = {elem.text}
-                  questionTypeId = {elem.questionTypeId || 0}
-                  questionType = {elem.questionType || ""}
-                  fileTypeId = {elem.fileTypeId || 0}
-                  fileType = {elem.fileType || ""}
-                  options = {elem.options}
-                  required = {elem.required}
-                />
-              ))}
-              
-            </div>
-
-          {/* </div> */}
+          <div className="w-100 pt-3 ps-3">
+            {questions.map((elem, index)=>(
+              <QuestionSection
+                index = {index}
+                text = {elem.text}
+                questionType = {elem?.questionType || ""}
+                fileType = {elem?.fileType || ""}
+                options = {elem.options}
+                required = {elem.required}
+                onChange={(str:string)=>{console.log(str)}}
+              />
+            ))}
+          </div>
         </div>
            
 
@@ -347,6 +349,51 @@ const FormCreation: React.FC = () => {
                     ))}
                   </div>
                 )}
+
+                { validationKeywords.includes(selectedQuestionType?.questionType ?? "") && (
+                  <div className="w-full px-2">
+                    <div className="flex justify-between">
+                      <span className="text-lg font-medium">Input Validation</span>
+                      <Switch
+                        checked={question.validation}
+                        onChange={handleQuestionValidationChange}
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                { question.validation && (
+                  <>
+                    <div className="w-full flex justify-around">
+                      <div className="w-1/2 px-2">
+                        <span className="text-lg font-medium">Minimum</span>
+                        <div>
+                          <input
+                            type="number"
+                            className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
+                            placeholder="Enter Option Label"
+                            value={question.min}
+                            // onChange={(e) => handleAddMinValueChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-1/2 px-2">
+                        <span className="text-lg font-medium">Maximum</span>
+                        <div>
+                          <input
+                            type="number"
+                            className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
+                            placeholder="Enter Option Label"
+                            value={question.max}
+                            // onChange={(e) => handleAddMinValueChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-slate-400 ps-2 -mt-8"> minimum/ maximum refers to the numerical value when number else length of the input text </div>
+                  </>
+                )}
               </div>
               <div className="h-20"></div>
             </div>
@@ -361,10 +408,6 @@ const FormCreation: React.FC = () => {
             </div>
           </div>
         </div>
-
-
-
-
 
     </div>
   );

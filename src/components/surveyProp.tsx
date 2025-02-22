@@ -4,7 +4,7 @@ import { SurveyPropsInterface } from "../models/propInterfaces";
 
 const stars: number[] = [1, 2, 3, 4, 5];
 
-export default function Survey({ questions, onSubmit }: SurveyPropsInterface) {
+export default function Survey({ questions, onSubmit, }: SurveyPropsInterface) {
   const [ratings, setRatings] = useState<number[]>(Array(questions.length).fill(0));
 
   const handleRating = (index: number, rating: number) => {

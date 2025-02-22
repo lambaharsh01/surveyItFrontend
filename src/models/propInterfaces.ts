@@ -12,22 +12,37 @@ export interface SurveyPropsInterface {
   
 export type CheckboxPropInterface = {
   options: string[];
-  identifier: number;
+  index: number;
   type?: "checkbox" | "radio";
   onChange: (selected: string) => void;
 };
 
+export type SelectsPropInterface = {
+  options: string[];
+  index: number;
+  onChange: (selected: string) => void;
+};
 
 export interface QuestionSectionPropInterface {
-  identifier: number; // index
+  index: number; // index
   text: string;
-  questionTypeId: number;
   questionType: string;
-  fileTypeId: number;
   fileType: string;
   options: string[];
   required: boolean;
   questionAlignment? : string;
+  onChange: (data:string) => void;
+}
+
+export interface StarsPropInterface {
+  questionAlignment: string;
+  onChange: (data:string) => void;
+}
+
+
+export interface FilesPropInterface {
+    fileType:string;
+    onChange: (base64: string) => void;
 }
 
 

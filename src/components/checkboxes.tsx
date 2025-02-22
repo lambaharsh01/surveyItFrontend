@@ -2,11 +2,11 @@ import { useState } from "react";
 import { CheckboxPropInterface } from "../models/propInterfaces";
 import "../styles/checkboxes.css";
 
-const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, identifier, onChange }) => {
+const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, onChange }) => {
 
-  const optionStringLength = options.join("").length 
-  const inColumn:boolean = optionStringLength > 30
-  // const inColumn:boolean = true
+  // const optionStringLength = options.join("").length 
+  // const inColumn:boolean = optionStringLength > 30
+  const inColumn:boolean = true
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -25,21 +25,21 @@ const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, identifier
 
   return ( 
     <div className={`checkbox-container mt-3 ${inColumn ? "" : "flex justify-around"}`}> {/* VIEW */}
-      {options.map((option, index) => (
-        <div className="checkbox-wrapper-12 mb-2.5" key={`cbx-${index}`}>
+      {options.map((option, index2) => (
+        <div className="checkbox-wrapper-12 mb-2.5" key={`cbx-${index2}`}>
 
 <div className={`flex items-center ${inColumn ? "w-full justify-start" : "flex-col"}`}>
             <div className={`flex ${inColumn ? "justify-start ms-3" :"justify-center"} `}>
               <div className="cbx">
                 <input 
-                  id={`checkbox-${identifier.toString() + "_" + index}`}
+                  id={`checkbox-${index + "_" + index2}`}
                   className={`${type==="radio" ? "circular":""}`}
                   type={type}
                   checked={selectedOptions.includes(option)}
                   onChange={() => handleSelectionChange(option)}
                 />
                 <label 
-                  htmlFor={`checkbox-${identifier.toString() + "_" + index}`}
+                  htmlFor={`checkbox-${index.toString() + "_" + index2}`}
                   className={`${type==="radio" ? "circular":""}`}
                 ></label>
                 <svg width="15" height="14" viewBox="0 0 15 14" fill="none">
@@ -52,10 +52,10 @@ const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, identifier
 
           <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
             <defs>
-              <filter id={`goo-${ identifier.toString() + "_" + index}`}>
+              <filter id={`goo-${ index + "_" + index2}`}>
                 <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"></feGaussianBlur>
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7" result={`goo-${index}`}></feColorMatrix>
-                <feBlend in="SourceGraphic" in2={`goo-${index}`}></feBlend>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7" result={`goo-${index2}`}></feColorMatrix>
+                <feBlend in="SourceGraphic" in2={`goo-${index2}`}></feBlend>
               </filter>
             </defs>
           </svg>

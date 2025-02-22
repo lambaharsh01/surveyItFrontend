@@ -31,5 +31,8 @@ export interface QuestionStructure {
   fileType: string | null;
   options: string[];
   required: boolean;
+  validation: boolean;
+  min: number;
+  max: number;
 }
 
