@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { BsStack } from "react-icons/bs";
@@ -9,17 +9,13 @@ import { MdOutlineCreateNewFolder } from "react-icons/md";
 
 import Header from "../components/header";
 
-
 import { client } from "../constants/urlPath";
 
 import { localStorageItems } from "../constants/localStorageDataDictionary";
 
-// import axiosInterceptor from "../utils/axiosInterceptor";
-// import { toast } from "react-toastify";
-
 export default function Dashboard() {
   const navigate = useNavigate();
- 
+
   // LOGOUT
 
   const [logoutIsActive, setLogoutIsActive] = useState<boolean>(false);
@@ -55,9 +51,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="text-center">
-                <h6 className="font-medium text-lg">
-                  Surveys
-                </h6>
+                <h6 className="font-medium text-lg">Surveys</h6>
               </div>
             </div>
 
@@ -99,7 +93,7 @@ export default function Dashboard() {
               <div className="w-20 h-20 p-2">
                 <div
                   className="w-full h-full iconSectionBlue border shadow-sm flex justify-center items-center rounded-lg"
-                //   onClick={handleReset}
+                  //   onClick={handleReset}
                 >
                   <BsStack className="text-4xl" />
                 </div>

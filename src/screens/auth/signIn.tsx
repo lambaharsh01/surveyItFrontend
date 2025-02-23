@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { client } from "../../constants/urlPath";
+import { client, server } from "../../constants/urlPath";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import axiosInterceptor from "../../utils/axiosInterceptor";
 import { toast } from "react-toastify";
@@ -17,25 +17,22 @@ const SignIn: React.FC = () => {
   const [disabled, setDisabled] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  useEffect(()=>{
-
+  useEffect(() => {
     const token = localStorage.getItem(localStorageItems.token);
-    if (token){
+    if (token) {
       navigate(client.dashboard, { replace: true });
     }
-    
-  }, [])
+  }, []);
 
   const authenticateUser = () => {
-    
-    if(userEmail.length < 4) return toast.error("Please enter a valid email")
-    if(password.length < 4) return toast.error("Password is incorrect")
+    if (userEmail.length < 4) return toast.error("Please enter a valid email");
+    if (password.length < 4) return toast.error("Password is incorrect");
 
     setDisabled(true);
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/sign-in",
+      url: server.signIn,
       data: { userEmail, password },
     })
       .then((res) => {

@@ -9,7 +9,7 @@ import {
 import { otpStrengthInterface } from "../../models/authInterface";
 import axiosInterceptor from "../../utils/axiosInterceptor";
 import { setToken } from "../../utils/setLocalStorage";
-import { client } from "../../constants/urlPath";
+import { client, server } from "../../constants/urlPath";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const ForgotPassword: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/forgot-password",
+      url: server.forgotPassword,
       data: { userEmail },
     })
       .then((res) => {
@@ -77,7 +77,7 @@ const ForgotPassword: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/check-otp",
+      url: server.checkOtp,
       data: { otp, userEmail },
     })
       .then((res) => {
@@ -162,7 +162,7 @@ const ForgotPassword: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/set-password",
+      url: server.setPassword,
       data: { otp, userEmail, password },
     })
       .then((res) => {

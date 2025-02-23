@@ -13,7 +13,7 @@ import {
 } from "../../models/authInterface";
 import axiosInterceptor from "../../utils/axiosInterceptor";
 import { setToken } from "../../utils/setLocalStorage";
-import { client } from "../../constants/urlPath";
+import { client, server } from "../../constants/urlPath";
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +27,6 @@ const SignUp: React.FC = () => {
       });
     }
   }
-
 
   const [screen, setScreen] = useState<number>(0);
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -103,7 +102,7 @@ const SignUp: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/initial-sign-up",
+      url: server.initSignup,
       data: userInfo,
     })
       .then((res) => {
@@ -133,7 +132,7 @@ const SignUp: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/check-otp",
+      url: server.checkOtp,
       data: { otp, userEmail },
     })
       .then((res) => {
@@ -218,7 +217,7 @@ const SignUp: React.FC = () => {
 
     axiosInterceptor({
       method: "post",
-      url: "/auth/set-password",
+      url: server.setPassword,
       data: { otp, userEmail, password },
     })
       .then((res) => {
@@ -235,10 +234,7 @@ const SignUp: React.FC = () => {
         toast.error(err.message);
         setDisabled(false);
       });
-
   };
-
-
 
   const [day, setDay] = useState<string>("");
   const [month, setMonth] = useState<string>("");
@@ -250,58 +246,56 @@ const SignUp: React.FC = () => {
 
   const regex = /^[0-9]$/;
 
-  const handleDayInput = (e:React.KeyboardEvent<HTMLInputElement>)=>{
+  const handleDayInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const keyPressed = e.key;
     const inputValue = e.currentTarget.value;
 
-    if(!regex.test(keyPressed) &&  keyPressed !== "Backspace") return
-    
-    if(inputValue.length>2 && keyPressed !== "Backspace"){
-      monthInput.current?.focus()
+    if (!regex.test(keyPressed) && keyPressed !== "Backspace") return;
+
+    if (inputValue.length > 2 && keyPressed !== "Backspace") {
+      monthInput.current?.focus();
     }
 
-    if(inputValue.length===2 && keyPressed !== "Backspace"){
-      monthInput.current?.focus()
+    if (inputValue.length === 2 && keyPressed !== "Backspace") {
+      monthInput.current?.focus();
     }
-  }
+  };
 
-  const handleMonthInput= (e:React.KeyboardEvent<HTMLInputElement>)=>{
+  const handleMonthInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const keyPressed = e.key;
     const inputValue = e.currentTarget.value;
 
-    if(!regex.test(keyPressed) &&  keyPressed !== "Backspace") return
+    if (!regex.test(keyPressed) && keyPressed !== "Backspace") return;
 
-    if(inputValue.length>2 && keyPressed !== "Backspace"){
-      yearInput.current?.focus()
-    }
-    
-    if(inputValue.length===2 && keyPressed !== "Backspace"){
-      yearInput.current?.focus()
+    if (inputValue.length > 2 && keyPressed !== "Backspace") {
+      yearInput.current?.focus();
     }
 
-    if(inputValue.length===0 && keyPressed === "Backspace"){
-      e.currentTarget.value=""
-      dayInput.current?.focus()
+    if (inputValue.length === 2 && keyPressed !== "Backspace") {
+      yearInput.current?.focus();
     }
-  }
 
-  const handleYearInput = (e:React.KeyboardEvent<HTMLInputElement>) =>{
+    if (inputValue.length === 0 && keyPressed === "Backspace") {
+      e.currentTarget.value = "";
+      dayInput.current?.focus();
+    }
+  };
+
+  const handleYearInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const keyPressed = e.key;
     const inputValue = e.currentTarget.value;
 
-    if(!regex.test(keyPressed) &&  keyPressed !== "Backspace") return
-    
-    if(inputValue.length>3 && keyPressed !== "Backspace"){
-      return e.currentTarget.value = e.currentTarget.value.slice(0,3)
+    if (!regex.test(keyPressed) && keyPressed !== "Backspace") return;
+
+    if (inputValue.length > 3 && keyPressed !== "Backspace") {
+      return (e.currentTarget.value = e.currentTarget.value.slice(0, 3));
     }
 
-    if(inputValue.length===0 && keyPressed === "Backspace"){
-      e.currentTarget.value=""
-      monthInput.current?.focus()
+    if (inputValue.length === 0 && keyPressed === "Backspace") {
+      e.currentTarget.value = "";
+      monthInput.current?.focus();
     }
-  }
-  
-
+  };
 
   return (
     <div className="flex justify-center w-full h-screen rentCoRed">
@@ -351,7 +345,7 @@ const SignUp: React.FC = () => {
                     placeholder="Day"
                     // value={day}
                     onKeyDown={handleDayInput}
-                    onKeyUp={e=>setDay(e.currentTarget.value)}
+                    onKeyUp={(e) => setDay(e.currentTarget.value)}
                   />
                 </div>
                 <div className="w-25 px-1">
@@ -362,7 +356,7 @@ const SignUp: React.FC = () => {
                     placeholder="Month"
                     // value={month}
                     onKeyDown={handleMonthInput}
-                    onKeyUp={e=>setMonth(e.currentTarget.value)}
+                    onKeyUp={(e) => setMonth(e.currentTarget.value)}
                   />
                 </div>
                 <div className="w-50 ps-1">
@@ -373,7 +367,7 @@ const SignUp: React.FC = () => {
                     placeholder="Birth Year"
                     // value={year}
                     onKeyDown={handleYearInput}
-                    onKeyUp={e=>setYear(e.currentTarget.value)}
+                    onKeyUp={(e) => setYear(e.currentTarget.value)}
                   />
                 </div>
               </div>
