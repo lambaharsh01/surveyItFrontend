@@ -14,7 +14,7 @@ const Selects: React.FC<SelectsPropInterface> = ({ index, options, onChange }) =
 
   return (
     <select
-        className="px-3 py-3 mb-4 w-100 bg-slate-100 text-gray-700 border border-gray-300 focus:ring-gray-700"
+        className="px-3 py-3 mb-4 w-100 bg-slate-100 text-gray-700 border hover:bg-gray-200 focus:ring-gray-700"
         value={selected}
         onChange={handleChange}
     >

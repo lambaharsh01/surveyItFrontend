@@ -1,48 +1,35 @@
-import { ChangeEvent ,useEffect, useState } from "react";
-import { flushSync } from "react-dom";
+import { useEffect, useState } from "react";
+
 import { MdAddToPhotos } from "react-icons/md";
 
 import Header from "../../components/header";
-import DropdownSearch from "../../components/dropdownSearch";
-import QuestionSection from "../../components/questionSection";
-import Switch from "../../components/switch";
 
 import { toast } from "react-toastify";
 
-import convertArrayIntoSearchStream from "../../utils/convertArrayIntoSearchStream";
 import axiosInterceptor from "../../utils/axiosInterceptor";
 
-import { QuestionTypeStructure, FileTypeStructure, QuestionStructure } from "../../models/surveyInterface";
-import { optionsKeywords, validationKeywords } from "../../utils/constants";
+import { FiEdit3 } from "react-icons/fi";
+import { FaDeleteLeft } from "react-icons/fa6";
 
+import { surveyDetailsStructure } from "../../models/surveyInterface";
+import Selects from "../../components/selects";
 
 const FormCreation: React.FC = () => {
-
-  // const navigate = useNavigate();
-
-  const emptyQuestionStructure: QuestionStructure = {
-    text: "",
-    questionTypeId: 0,
-    questionType: "",
-    fileTypeId: 0,
-    fileType: "",
-    options: [],
-    required: true,
-    validation: false,
-    min: 0,
-    max: 0,
+  
+  const emptySurveyDetailsStructure: surveyDetailsStructure = {
+    surveyName:"",
+    surveyDescription:"",
+    surveyTargetAudience:"",
+    surveyAlignment:"",
+    surveyColorTheme:"#FFC61B",
+    activeFrom:"",
+    activeTo:"",
   }
 
-  const [questions, setQuestions] = useState<QuestionStructure[]>([])
-  const [question, setQuestion] = useState<QuestionStructure>(structuredClone(emptyQuestionStructure))
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
+  const [survey, setSurvey] = useState<surveyDetailsStructure>(structuredClone(emptySurveyDetailsStructure))
+  const [surveys, setSurveys] = useState<surveyDetailsStructure[]>([])
 
-  const [questionTypes, setQuestionTypes] = useState<QuestionTypeStructure[]>([])
-  const [selectedQuestionType, setSelectedQuestionType] = useState<QuestionTypeStructure | null>(null)
-
-  const [fileTypes, setFileTypes] = useState<FileTypeStructure[]>([])
-  const [selectedFileType, setSelectedFileType] = useState<FileTypeStructure | null>(null)
-
-  const [renderDropdown, setRenderDropdown] = useState<number>(0)
 
   useEffect(()=>{
 
@@ -50,158 +37,57 @@ const FormCreation: React.FC = () => {
       method: "get",
       url: "/fetch/get-question-types",
     }).then((res) => {
-      setQuestionTypes(res?.questionType ?? [])
+      // setQuestionTypes(res?.questionType ?? [])
     }).catch((err) => {
       toast.error(err.message);
     });
     
-    axiosInterceptor({
-      method: "get",
-      url: "/fetch/get-file-types",
-    }).then((res) => {
-      setFileTypes(res?.fileType ?? [])
-    }).catch((err) => {
-      toast.error(err.message);
-    });
-
   },[])
 
-  const handleQuestionRequiredChange = (checked: boolean):void => {
-    setQuestion(prev=>{
-      return {...prev, required: checked}
-    })
-  }
-
-  const handleQuestionTextChange = (e: ChangeEvent<HTMLTextAreaElement>):void => {
-    const questionText = e.currentTarget.value
-    setQuestion(prev=>{
-      return {...prev, text: questionText}
-    })
-  }
-
-  const handleQuestionTypeSelection = (selected: {
-    label: string;
-    value: QuestionTypeStructure;
-  }) => {
-    setSelectedQuestionType(selected.value)
-    setQuestion(prev => {
-      const {id, questionType} = selected.value
-      return {...prev, questionTypeId: id, questionType: questionType}
-    })
-  };
-
-  const handleFileTypeSelection = (selected: {
-    label: string;
-    value: FileTypeStructure;
-  }) => {
-    setSelectedFileType(selected.value)
-    setQuestion(prev => {
-      const {id, fileType} = selected.value
-      return {...prev, fileTypeId: id, fileType: fileType}
-    })
-  };
-
-
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
-
-  const handleAddOption = ():void => {
-    setQuestion(prev => {
-      return {...prev, options:[...prev.options, ""]}
-    })
-  }
-
-  const handleAddOptionChange = (e: ChangeEvent<HTMLInputElement>, index:number):void =>{
-    var inputText = e.currentTarget.value
-    setQuestion(prev => {
-      prev.options[index] = inputText
-      return {...prev}
-    })
-  }
-
-
-  const handleQuestionValidationChange = (checked: boolean):void => {
-    setQuestion(prev=>{
-      return {...prev, validation: checked}
-    })
-  }
-
-  const handleRemoveOptionChange = (index:number):void =>{
-    setQuestion(prev=>{
-      prev.options.splice(index,1)
-      return {...prev}
-    })
-  }
  
-  const validateQuestionSave = ():void =>{
+  const validateSurveySave = ():void =>{
 
-    if(question.text.trim().length < 5) {
-      toast.warning("make sure to add more than 5 characters to the question")
+    const { surveyName, surveyDescription, surveyTargetAudience, surveyAlignment, surveyColorTheme, activeFrom, activeTo } = survey
+
+    if(!surveyName){
+      toast.warning("make sure to add Survey Name")
       return
     }
-    
-    if(!selectedQuestionType){
-      toast.warning("make sure select the question type")
+    if(!surveyDescription){
+      toast.warning("make sure to add Survey Description")
       return
     }
-    
-    if(selectedQuestionType?.questionType === "file" && !selectedFileType?.fileType){
-      toast.warning("make sure select the file type")
+    if(!surveyTargetAudience){
+      toast.warning("make sure to add Survey Target Audience")
       return
     }
-
-    if(optionsKeywords.includes(selectedQuestionType?.questionType ?? "")){
-
-      if(!question?.options.length){
-        toast.warning("make sure you add the options to select")
-        return
-      }
-  
-      const emptyOptions = question?.options.filter(elem=>Boolean(!elem.trim()))
-      if(emptyOptions.length){
-          toast.warning(`${emptyOptions.length} option field require input`)
-          return
-      }
-
+    if(!surveyAlignment){
+      toast.warning("make sure to add Survey Question Alignment")
+      return
     }
-
-    if(question.validation && (question.min===0 || question.max===0)){
-      toast.warning("minimum / maximum can not be 0")
+    if(!surveyColorTheme){
+      toast.warning("make sure to add Survey Color Theme")
+      return
+    }
+    if(!activeFrom){
+      toast.warning("make sure to add Active From Date")
+      return
+    }
+    if(!activeTo){
+      toast.warning("make sure to add Active To Date")
       return
     }
 
-
-    // CLEANING REDUNDANCY
-    flushSync(()=>{
-      if(selectedQuestionType?.questionType === "file"){ 
-
-        setQuestion(prev=>{
-          return {...prev, options:[]}
-        })
-
-      }else if(optionsKeywords.includes(selectedQuestionType?.questionType ?? "")){
-
-        setQuestion(prev=>{
-          return {...prev, fileTypeId: null}
-        })
-        setSelectedFileType(null)
-        
-      }else{
-        
-        setQuestion(prev=>{
-          return {...prev, options:[], fileTypeId: null}
-        })
-        setSelectedFileType(null)
-
-      }
-    })
+    axiosInterceptor({
+      method: "get",
+      url: "/fetch/get-question-types",
+    }).then((res) => {
+      // setQuestionTypes(res?.questionType ?? [])
+    }).catch((err) => {
+      toast.error(err.message);
+    });
     
-    setQuestions(prev=>[...prev, question])
-    setQuestion(structuredClone(emptyQuestionStructure)) 
-    
-    setSelectedQuestionType(null)
-    setSelectedFileType(null)
-    setRenderDropdown(prev => prev+1)
-    setSidebarOpen(false)
+
     toast.success("Question Added")
   }
   
@@ -213,7 +99,7 @@ const FormCreation: React.FC = () => {
         <div className="w-full p-4">
           <div className="w-full flex items-end justify-between">
             <h1 className="mainFont ps-2">
-              <span className="appTextColor me-1 text-4xl">Create Survey</span>
+              <span className="appTextColor me-1 text-4xl">Surveys</span>
             </h1>
               
             <button 
@@ -221,11 +107,11 @@ const FormCreation: React.FC = () => {
               onClick={()=>setSidebarOpen(true)}
             >
               <MdAddToPhotos className="mt-1.5 me-1"/>
-              <span>Add Question</span>
+              <span>Add Survey</span>
             </button>
           </div>
 
-          <div className="w-100 pt-3 ps-3">
+          {/* <div className="w-100 pt-3 ps-3">
             {questions.map((elem, index)=>(
               <QuestionSection
                 index = {index}
@@ -237,7 +123,7 @@ const FormCreation: React.FC = () => {
                 onChange={(str:string)=>{console.log(str)}}
               />
             ))}
-          </div>
+          </div> */}
         </div>
            
 
@@ -272,128 +158,129 @@ const FormCreation: React.FC = () => {
               <div className="flex flex-wrap gap-4">
 
                 <div className="mt-1 w-full px-2">
-                  <div className="flex justify-between">
-                    <span className="text-lg font-medium">Enter Question 
-                      <span className="text-sm"> ({question.required ? "required": "not required"})</span>
-                    </span>
+                  <span className="text-lg font-medium">Survey Name</span>
 
-                    <span> 
-                      <Switch
-                        checked={question.required}
-                        onChange={handleQuestionRequiredChange}
-                      />
-                    </span>
-                  </div>
-                  <textarea
-                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100"
-                    rows={5}
-                    placeholder="Enter Question"
-                    value={question.text}
-                    onChange={handleQuestionTextChange}
+                  <input
+                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
+                    placeholder="Enter"
+                    value={survey.surveyName}
+                    onChange={(e)=>{
+                      const input:string = e.currentTarget.value
+                      setSurvey(prev=>{
+                        return {...prev, surveyName: input}
+                      })
+                    }}
                   />
                 </div>
 
-                <div className="w-full px-2">
-                  <span className="text-lg font-medium">Select Question Type</span>
-                  <div>
-                    <DropdownSearch
-                      key={"questionTypeLabel" + renderDropdown }
-                      options={convertArrayIntoSearchStream(questionTypes, "questionTypeLabel")}
-                      placeholder={selectedQuestionType?.questionTypeLabel || "Select Question Type"}
-                      onSelect={handleQuestionTypeSelection}
-                    />
+                <div className="mt-1 w-full px-2">
+                  <span className="text-lg font-medium">Survey Description</span>
+
+                  <textarea
+                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
+                    rows={5}
+                    placeholder="Enter"
+                    value={survey.surveyDescription}
+                    onChange={(e)=>{
+                      const input:string = e.currentTarget.value
+                      setSurvey(prev=>{
+                        return {...prev, surveyDescription:input}
+                      })
+                    }}
+                  />
+                </div>
+
+                <div className="mt-1 w-full px-2">
+                  <span className="text-lg font-medium">Survey Target Audience</span>
+
+                  <textarea
+                    className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
+                    rows={2}
+                    placeholder="Enter"
+                    value={survey.surveyTargetAudience}
+                    onChange={(e)=>{
+                      const input:string = e.currentTarget.value
+                      setSurvey(prev=>{
+                        return {...prev, surveyTargetAudience:input}
+                      })
+                    }}
+                  />
+                </div>
+
+                <div className="mt-1 w-full px-2">
+                  <span className="text-lg font-medium">Survey Question Alignment</span>
+
+                  <Selects
+                    index={-1}
+                    options={["start", "center", "end"]}
+                    onChange={(e)=>{
+                      const input:string = e
+                      setSurvey(prev=>{
+                        return {...prev, surveyAlignment:input}
+                      })
+                    }}
+                  />
+                </div>
+
+                <div className="mt-1 w-full px-2">
+                  <span className="text-lg font-medium">Survey Color Theme</span>
+
+                  <div className="w-full flex">
+
+                    <input
+                      className="px-3 py-3 w-11/12 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
+                      placeholder="Enter"
+                      value={survey.surveyColorTheme}
+                      onChange={(e)=>{
+                        const input:string = e.currentTarget.value
+                        setSurvey(prev=>{
+                          return {...prev, surveyColorTheme: input}
+                        })
+                      }}
+                      />
+
+                    <div className="w-1/12 h-13 p-2" style={{backgroundColor:survey.surveyColorTheme}}></div>
+                    
                   </div>
                 </div>
 
-                {/* IF FILE */}
-                {selectedQuestionType?.questionType === "file" && (
-                  <div className="w-full px-2">
-                    <span className="text-lg font-medium">Select File Type</span>
+                <div className="w-full flex justify-around">
+                  <div className="w-1/2 px-2">
+                    <span className="text-lg font-medium">Active From</span>
                     <div>
-                      <DropdownSearch
-                        key={"fileTypeLabel" + renderDropdown}
-                        options={convertArrayIntoSearchStream(fileTypes, "fileTypeLabel")}
-                        placeholder={selectedFileType?.fileTypeLabel || "Select File Type"}
-                        onSelect={handleFileTypeSelection}
+                      <input
+                        type="date"
+                        className="px-3 py-3 mb-3 w-100 border-1 bg-slate-100"
+                        placeholder="Enter Option Label"
+                        value={survey.activeFrom}
+                        onChange={(e) => {
+                          const input = e.currentTarget.value
+                          setSurvey(prev=>{
+                            return {...prev, activeFrom:input}
+                          })
+                        }}
                       />
                     </div>
                   </div>
-                )}
 
-                {/* IF DROPDOWN OR CHECKBOX */}
-                { optionsKeywords.includes(selectedQuestionType?.questionType ?? "") && (
-
-                  <div className="mt-2 w-full px-2">
-                    <button 
-                      className="appBackgroundColor p-1.5 pb-2 font-medium text-white flex mb-3"
-                      onClick={handleAddOption}
-                    >
-                      <MdAddToPhotos className="mt-1.5 me-1"/>
-                      <span>Add Options</span>
-                    </button>
-                    
-                    {question.options.map((elem, index)=>(
-                      <div className="flex" key={"option" + index}>
-                        <input
-                          type="text"
-                          className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
-                          placeholder="Enter Option Label"
-                          value={elem}
-                          onChange={(e) => handleAddOptionChange(e, index)}
-                        />
-                        <button 
-                          onClick={()=> handleRemoveOptionChange(index)} 
-                          className="text-4xl font-bold ms-2 -mt-10"
-                        > × </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                { validationKeywords.includes(selectedQuestionType?.questionType ?? "") && (
-                  <div className="w-full px-2">
-                    <div className="flex justify-between">
-                      <span className="text-lg font-medium">Input Validation</span>
-                      <Switch
-                        checked={question.validation}
-                        onChange={handleQuestionValidationChange}
+                  <div className="w-1/2 px-2">
+                    <span className="text-lg font-medium">Active To</span>
+                    <div>
+                      <input
+                        type="date"
+                        className="px-3 py-3 mb-3 w-100 border-1 bg-slate-100"
+                        placeholder="Enter Option Label"
+                        value={survey.activeTo}
+                        onChange={(e) => {
+                          const input = e.currentTarget.value
+                          setSurvey(prev=>{
+                            return {...prev, activeTo:input}
+                          })
+                        }}
                       />
                     </div>
                   </div>
-                )}
-                
-                { question.validation && (
-                  <>
-                    <div className="w-full flex justify-around">
-                      <div className="w-1/2 px-2">
-                        <span className="text-lg font-medium">Minimum</span>
-                        <div>
-                          <input
-                            type="number"
-                            className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
-                            placeholder="Enter Option Label"
-                            value={question.min}
-                            // onChange={(e) => handleAddMinValueChange}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-1/2 px-2">
-                        <span className="text-lg font-medium">Maximum</span>
-                        <div>
-                          <input
-                            type="number"
-                            className="px-3 py-2 mb-3 mt-2 w-100 border-1 bg-slate-100"
-                            placeholder="Enter Option Label"
-                            value={question.max}
-                            // onChange={(e) => handleAddMinValueChange}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-slate-400 ps-2 -mt-8"> minimum/ maximum refers to the numerical value when number else length of the input text </div>
-                  </>
-                )}
+                </div>
               </div>
               <div className="h-20"></div>
             </div>
@@ -402,7 +289,7 @@ const FormCreation: React.FC = () => {
               <div className="w-full px-2">
                 <button
                   className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
-                  onClick={validateQuestionSave}
+                  onClick={validateSurveySave}
                 >Save</button>
               </div>
             </div>

@@ -21,7 +21,7 @@ const Stars: React.FC<StarsPropInterface> = ({ questionAlignment="start", onChan
         className={`cursor-pointer focus:outline-none transition-all ${
           rating >= value 
             ? "w-8 h-8 fill-yellow-400 stroke-yellow-500 drop-shadow-md"
-            : "w-7 h-7 fill-none stroke-gray-400 hover:stroke-yellow-500"
+            : "w-8 h-8 fill-none stroke-gray-400 hover:stroke-yellow-500"
         }`}
         viewBox="0 0 24 24"
         onClick={() => handleRating(value)}
