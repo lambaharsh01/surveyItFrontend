@@ -36,3 +36,15 @@ export interface QuestionStructure {
   max: number;
 }
 
+
+export interface surveyDetailsStructure{
+  id?: number
+  surveyCode?: string
+  surveyName: string
+  surveyDescription: string
+  surveyTargetAudience:string
+  surveyAlignment: string
+  surveyColorTheme: string
+  activeFrom: string
+  activeTo: string
+}
