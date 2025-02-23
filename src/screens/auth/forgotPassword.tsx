@@ -45,8 +45,8 @@ const ForgotPassword: React.FC = () => {
     setDisabled(true);
 
     axiosInterceptor({
-      method: "post",
-      url: server.forgotPassword,
+      method: server.forgotPassword.method,
+      url: server.forgotPassword.url,
       data: { userEmail },
     })
       .then((res) => {
@@ -76,8 +76,8 @@ const ForgotPassword: React.FC = () => {
     setDisabled(true);
 
     axiosInterceptor({
-      method: "post",
-      url: server.checkOtp,
+      method: server.checkOtp.method,
+      url: server.checkOtp.url,
       data: { otp, userEmail },
     })
       .then((res) => {
@@ -161,8 +161,8 @@ const ForgotPassword: React.FC = () => {
       return toast.error(`Your password is weak`);
 
     axiosInterceptor({
-      method: "post",
-      url: server.setPassword,
+      method: server.setPassword.method,
+      url: server.setPassword.url,
       data: { otp, userEmail, password },
     })
       .then((res) => {

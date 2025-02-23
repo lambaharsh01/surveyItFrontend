@@ -28,14 +28,9 @@ export default function Dashboard() {
   return (
     <div>
       <div className="min-h-screen creamBackground relative">
-        <Header />
-
-        <div className="h-14"></div>
-
-        <div className="ps-5 h-1/6 flex items-end">
-          <h1 className="mainFont ps-2">
-            <span className="appTextColor me-1 text-4xl">Dashboa</span>
-            <span className="outlined-text-medium-thin text-7xl ">rd</span>
+        <div className="p-2 h-1/6 flex items-end">
+          <h1 className="mainFont">
+            <span className="me-1 text-4xl">Dashboard</span>
           </h1>
         </div>
 

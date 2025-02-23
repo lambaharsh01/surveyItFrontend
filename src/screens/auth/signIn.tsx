@@ -31,8 +31,8 @@ const SignIn: React.FC = () => {
     setDisabled(true);
 
     axiosInterceptor({
-      method: "post",
-      url: server.signIn,
+      method: server.signIn.method,
+      url: server.signIn.url,
       data: { userEmail, password },
     })
       .then((res) => {

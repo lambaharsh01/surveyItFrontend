@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 import { MdAddToPhotos } from "react-icons/md";
 
 import Header from "../../components/header";
 
 import { toast } from "react-toastify";
+import { server } from "../../constants/urlPath";
 
 import axiosInterceptor from "../../utils/axiosInterceptor";
 
@@ -13,8 +15,11 @@ import { FaDeleteLeft } from "react-icons/fa6";
 
 import { surveyDetailsStructure } from "../../models/surveyInterface";
 import Selects from "../../components/selects";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const FormCreation: React.FC = () => {
+  const offset: number = 10;
+
   const emptySurveyDetailsStructure: surveyDetailsStructure = {
     surveyName: "",
     surveyDescription: "",
@@ -30,83 +35,131 @@ const FormCreation: React.FC = () => {
     structuredClone(emptySurveyDetailsStructure)
   );
   const [surveys, setSurveys] = useState<surveyDetailsStructure[]>([]);
+  const [renderDropdown, setRenderDropdown] = useState<number>(0);
 
-  useEffect(() => {
+  const [page, setPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [actionIndex, setActionIndex] = useState<number>(-1);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
+
+  const fetchSurveys = (omitEmpty: boolean): void => {
     axiosInterceptor({
-      method: "get",
-      url: "/fetch/get-question-types",
+      method: server.getSurveys.method,
+      url: server.getSurveys.url,
+      data: { offset, page },
     })
       .then((res) => {
-        // setQuestionTypes(res?.questionType ?? [])
+        if (res.to >= res.total) {
+          setHasMore(false);
+        }
+
+        if (omitEmpty) {
+          setSurveys(res.data);
+          setPage(1);
+        } else {
+          setPage((prev) => prev + 1);
+          setSurveys((prev) => [...prev, ...res.data]);
+        }
       })
       .catch((err) => {
         toast.error(err.message);
       });
+  };
+
+  useEffect(() => {
+    fetchSurveys(true);
   }, []);
 
   const validateSurveySave = (): void => {
-    const {
-      surveyName,
-      surveyDescription,
-      surveyTargetAudience,
-      surveyAlignment,
-      surveyColorTheme,
-      activeFrom,
-      activeTo,
-    } = survey;
-
-    if (!surveyName) {
+    if (!survey.surveyName) {
       toast.warning("make sure to add Survey Name");
       return;
     }
-    if (!surveyDescription) {
+    if (!survey.surveyDescription) {
       toast.warning("make sure to add Survey Description");
       return;
     }
-    if (!surveyTargetAudience) {
+    if (!survey.surveyTargetAudience) {
       toast.warning("make sure to add Survey Target Audience");
       return;
     }
-    if (!surveyAlignment) {
+    if (!survey.surveyAlignment) {
       toast.warning("make sure to add Survey Question Alignment");
       return;
     }
-    if (!surveyColorTheme) {
+    if (!survey.surveyColorTheme) {
       toast.warning("make sure to add Survey Color Theme");
       return;
     }
-    if (!activeFrom) {
+    if (!survey.activeFrom) {
       toast.warning("make sure to add Active From Date");
       return;
     }
-    if (!activeTo) {
+    if (!survey.activeTo) {
       toast.warning("make sure to add Active To Date");
       return;
     }
 
-    axiosInterceptor({
-      method: "get",
-      url: "/fetch/get-question-types",
-    })
-      .then((res) => {
-        // setQuestionTypes(res?.questionType ?? [])
+    if (actionIndex < 0) {
+      axiosInterceptor({
+        method: server.addSurvey.method,
+        url: server.addSurvey.url,
+        data: survey,
       })
-      .catch((err) => {
-        toast.error(err.message);
+        .then((res) => {
+          toast.success(res.message);
+          setSurvey(structuredClone(emptySurveyDetailsStructure));
+          setRenderDropdown((prev) => prev + 1);
+          fetchSurveys(true);
+          setSidebarOpen(false);
+        })
+        .catch(() => {
+          toast.error("Something Went Wrong");
+        });
+      return;
+    }
+
+    const surveyIdParams: string = `/${surveys?.[actionIndex]?.id ?? 0}`;
+
+    axiosInterceptor({
+      method: server.updateSurvey.method,
+      url: server.updateSurvey.url + surveyIdParams,
+      data: survey,
+    })
+      .then(() => {
+        setSurvey(structuredClone(emptySurveyDetailsStructure));
+        setRenderDropdown((prev) => prev + 1);
+        fetchSurveys(true);
+        setSidebarOpen(false);
+      })
+      .catch(() => {
+        toast.error("Something Went Wrong");
+      });
+  };
+
+  const deleteSurvey = (): void => {
+    const surveyIdParams: string = `/${surveys?.[actionIndex]?.id ?? 0}`;
+    axiosInterceptor({
+      url: server.deleteSurvey.url + surveyIdParams,
+      method: server.deleteSurvey.method,
+    })
+      .then(() => {
+        fetchSurveys(true);
+      })
+      .catch(() => {
+        toast.error("Something Went Wrong");
       });
 
-    toast.success("Question Added");
+    setActionIndex(-1);
+    setDeleteConfirmation(false);
   };
 
   return (
     <div className="min-h-screen creamBackground relative">
-      <Header />
-      <div className="h-14"></div>
-
-      <div className="w-full p-4">
+      <div className="w-full p-2">
         <div className="w-full flex items-end justify-between">
-          <h1 className="mainFont ps-2">
-            <span className="appTextColor me-1 text-4xl">Surveys</span>
+          <h1 className="mainFont">
+            <span className="me-1 text-4xl">Surveys</span>
           </h1>
 
           <button
@@ -118,22 +171,87 @@ const FormCreation: React.FC = () => {
           </button>
         </div>
 
-        {/* <div className="w-100 pt-3 ps-3">
-            {questions.map((elem, index)=>(
-              <QuestionSection
-                index = {index}
-                text = {elem.text}
-                questionType = {elem?.questionType || ""}
-                fileType = {elem?.fileType || ""}
-                options = {elem.options}
-                required = {elem.required}
-                onChange={(str:string)=>{console.log(str)}}
-              />
-            ))}
-          </div> */}
+        <div className="w-full overflow-x-auto">
+          <InfiniteScroll
+            dataLength={surveys.length}
+            next={() => fetchSurveys(false)}
+            hasMore={hasMore}
+            loader={
+              <div className="w-100 text-center mb-2">
+                <div className="spinner-border spinner-border text-slate-400"></div>
+              </div>
+            }
+            // endMessage={<p style={{ textAlign: "center" }}>No more data to display</p>}
+          >
+            <div className="rounded-lg overflow-hidden border border-gray-600 min-w-max">
+              <table className="w-full border-separate border-spacing-0 text-left">
+                <thead className="bg-gray-200 text-gray-900 font-medium">
+                  <tr>
+                    <th className="border border-slate-900 px-4 py-3">
+                      Active
+                    </th>
+                    <th className="border border-slate-900 px-4 py-3">
+                      Survey Name
+                    </th>
+                    <th className="border border-slate-900 px-4 py-3">
+                      Survey Description
+                    </th>
+                    <th className="border border-slate-900 px-4 py-3">
+                      Responses
+                    </th>
+                    <th className="border border-slate-900 px-4 py-3">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {surveys.map((elem, index) => (
+                    <tr key={"surveyRow" + index} className="hover:bg-gray-100">
+                      <td className="border border-gray-400 px-4 py-3 text-center">
+                        <span
+                          className={`w-4 h-4 inline-block rounded-full ${
+                            elem.active ? "bg-green-500" : "bg-red-500"
+                          }`}
+                        />
+                      </td>
+                      <td className="border border-gray-400 px-4 py-3">
+                        {elem.surveyName}
+                      </td>
+                      <td className="border border-gray-400 px-4 py-3 break-words max-w-xs">
+                        {elem.surveyDescription}
+                      </td>
+                      <td className="border border-gray-400 px-4 py-3 text-center">
+                        {index}
+                      </td>
+                      <td className="border border-gray-400 px-4 py-3">
+                        <div className="w-full flex justify-around">
+                          <FiEdit3
+                            className="text-xl text-blue-500 me-3"
+                            onClick={() => {
+                              setActionIndex(index);
+                              setSurvey(surveys[index]);
+                              setSidebarOpen(true);
+                            }}
+                          />
+                          <FaDeleteLeft
+                            className="text-xl text-red-500"
+                            onClick={() => {
+                              setActionIndex(index);
+                              setDeleteConfirmation(true);
+                            }}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </InfiniteScroll>
+        </div>
       </div>
 
-      {/* ADD QUESTION */}
+      {/* ADD SURVEY */}
       <div
         className={`fixed top-0 right-0 h-full bg-white transition-all duration-300 ease-in-out 
             ${sidebarOpen ? "w-11/12" : "w-0"} z-50 flex flex-col`}
@@ -143,7 +261,11 @@ const FormCreation: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl ps-2">Add Survey</h2>
               <button
-                onClick={() => setSidebarOpen(false)}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  setActionIndex(-1);
+                  setSurvey(structuredClone(emptySurveyDetailsStructure));
+                }}
                 className="text-4xl font-bold mb-3"
               >
                 {" "}
@@ -210,6 +332,7 @@ const FormCreation: React.FC = () => {
                 </span>
 
                 <Selects
+                  key={"Select" + renderDropdown}
                   index={-1}
                   options={["start", "center", "end"]}
                   onChange={(e) => {
@@ -297,6 +420,31 @@ const FormCreation: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {deleteConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 className="text-lg text-center font-medium mb-4 text-gray-800">
+              Are you sure you want delete the survey?
+            </h2>
+            <br />
+            <div className="flex justify-around space-x-4">
+              <button
+                onClick={() => setDeleteConfirmation(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteSurvey}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

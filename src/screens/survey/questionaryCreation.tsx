@@ -53,8 +53,8 @@ const FormCreation: React.FC = () => {
 
   useEffect(() => {
     axiosInterceptor({
-      method: "get",
-      url: server.getQuestionTypes,
+      method: server.getQuestionTypes.method,
+      url: server.getQuestionTypes.url,
     })
       .then((res) => {
         setQuestionTypes(res?.questionType ?? []);
@@ -64,8 +64,8 @@ const FormCreation: React.FC = () => {
       });
 
     axiosInterceptor({
-      method: "get",
-      url: server.getFileTypes,
+      method: server.getFileTypes.method,
+      url: server.getFileTypes.url,
     })
       .then((res) => {
         setFileTypes(res?.fileType ?? []);

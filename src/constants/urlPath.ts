@@ -8,14 +8,18 @@ export const client = {
 };
 
 export const server = {
-  signIn: "/auth/sign-in",
-  forgotPassword: "/auth/forgot-password",
-  initSignup: "/auth/initial-sign-up",
-  checkOtp: "/auth/check-otp",
-  setPassword: "/auth/set-password",
+  signIn: { url: "/auth/sign-in", method: "post" },
+  forgotPassword: { url: "/auth/forgot-password", method: "post" },
+  initSignup: { url: "/auth/initial-sign-up", method: "post" },
+  checkOtp: { url: "/auth/check-otp", method: "post" },
+  setPassword: { url: "/auth/set-password", method: "post" },
 
-  getQuestionTypes: "/fetch/get-question-types",
-  getFileTypes: "/fetch/get-file-types",
+  getQuestionTypes: { url: "/fetch/get-question-types", method: "get" },
+  getFileTypes: { url: "/fetch/get-file-types", method: "get" },
+  addSurvey: { url: "/fetch/add-survey", method: "post" },
+  updateSurvey: { url: "/fetch/update-survey", method: "put" },
+  getSurveys: { url: "/fetch/get-surveys", method: "post" },
+  deleteSurvey: { url: "/fetch/delete-survey", method: "delete" },
 };
 
 const endpoints = { client };

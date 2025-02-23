@@ -1,26 +1,26 @@
 export interface Question {
-    id: number;
-    text: string;
-    optional: boolean;
+  id: number;
+  text: string;
+  optional: boolean;
 }
 
 export interface RespondentDetail {
-    name: string;
-    email: string;
-    department: string;
-    position: string;
+  name: string;
+  email: string;
+  department: string;
+  position: string;
 }
 
-export interface QuestionTypeStructure{
+export interface QuestionTypeStructure {
   id: number;
-  questionType: string
-  questionTypeLabel: string
+  questionType: string;
+  questionTypeLabel: string;
 }
 
-export interface FileTypeStructure{
+export interface FileTypeStructure {
   id: number;
-  fileType: string
-  fileTypeLabel: string
+  fileType: string;
+  fileTypeLabel: string;
 }
 
 export interface QuestionStructure {
@@ -36,15 +36,16 @@ export interface QuestionStructure {
   max: number;
 }
 
-
-export interface surveyDetailsStructure{
-  id?: number
-  surveyCode?: string
-  surveyName: string
-  surveyDescription: string
-  surveyTargetAudience:string
-  surveyAlignment: string
-  surveyColorTheme: string
-  activeFrom: string
-  activeTo: string
+export interface surveyDetailsStructure {
+  id?: number;
+  surveyCode?: string;
+  surveyName: string;
+  surveyDescription: string;
+  surveyTargetAudience: string;
+  surveyAlignment: string;
+  surveyColorTheme: string;
+  activeFrom: string;
+  activeTo: string;
+  createdAt?: string;
+  active?: boolean;
 }
