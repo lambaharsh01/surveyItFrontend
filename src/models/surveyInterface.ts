@@ -24,6 +24,7 @@ export interface FileTypeStructure {
 }
 
 export interface QuestionStructure {
+  id?:number;
   text: string;
   questionTypeId: number | null;
   questionType: string | null;
@@ -44,6 +45,7 @@ export interface surveyDetailsStructure {
   surveyTargetAudience: string;
   surveyAlignment: string;
   surveyColorTheme: string;
+  allowMultipleSubmissions: boolean;
   activeFrom: string;
   activeTo: string;
   createdAt?: string;

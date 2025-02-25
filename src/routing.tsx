@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { client } from "./constants/urlPath";
+import { client, params } from "./constants/urlPath";
 
 // import Index from "./screens/index";
 import Dashboard from "./screens/dashboard";
@@ -9,7 +9,8 @@ import Dashboard from "./screens/dashboard";
 import SignIn from "./screens/auth/signIn";
 import SignUp from "./screens/auth/signUp";
 import ForgotPassword from "./screens/auth/forgotPassword";
-import FormCreation from "./screens/survey/surveyCreation";
+import SurveyCreation from "./screens/survey/surveyCreation";
+import QuestionaryCreation from "./screens/survey/questionaryCreation";
 
 function Routing() {
   return (
@@ -30,7 +31,8 @@ function Routing() {
           <Route path={client.signIn} element={<SignIn />} />
           <Route path={client.signUp} element={<SignUp />} />
           <Route path={client.forgotPassword} element={<ForgotPassword />} />
-          <Route path={client.formCreation} element={<FormCreation />} />
+          <Route path={client.surveyCreation} element={<SurveyCreation />} />
+          <Route path={client.questionaryCreation + "/:" + params.surveyCode} element={<QuestionaryCreation />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
-import { MdAddToPhotos } from "react-icons/md";
-
-import Header from "../../components/header";
 
 import { toast } from "react-toastify";
-import { server } from "../../constants/urlPath";
+import { client, server } from "../../constants/urlPath";
 
 import axiosInterceptor from "../../utils/axiosInterceptor";
 
+import { MdAddToPhotos } from "react-icons/md";
 import { FiEdit3 } from "react-icons/fi";
 import { FaDeleteLeft } from "react-icons/fa6";
 
 import { surveyDetailsStructure } from "../../models/surveyInterface";
 import Selects from "../../components/selects";
+import Switch from "../../components/switch";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const FormCreation: React.FC = () => {
+const SurveyCreation: React.FC = () => {
+
+  const navigate = useNavigate()
+
   const offset: number = 10;
 
   const emptySurveyDetailsStructure: surveyDetailsStructure = {
@@ -26,6 +29,7 @@ const FormCreation: React.FC = () => {
     surveyTargetAudience: "",
     surveyAlignment: "",
     surveyColorTheme: "#FFC61B",
+    allowMultipleSubmissions: true,
     activeFrom: "",
     activeTo: "",
   };
@@ -42,11 +46,27 @@ const FormCreation: React.FC = () => {
   const [actionIndex, setActionIndex] = useState<number>(-1);
   const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
 
+  const getBasePage= ():void=>{
+
+    flushSync(()=>{
+      setSurveys([])
+      setSurvey(structuredClone(emptySurveyDetailsStructure));
+      setRenderDropdown((prev) => prev + 1);
+      setSidebarOpen(false);
+      setHasMore(true)
+      setPage(0)
+    })
+    fetchSurveys(true);
+  }
+
   const fetchSurveys = (omitEmpty: boolean): void => {
+
+    const atPage = omitEmpty ? 0 : page
+
     axiosInterceptor({
       method: server.getSurveys.method,
       url: server.getSurveys.url,
-      data: { offset, page },
+      data: { offset, page: atPage },
     })
       .then((res) => {
         if (res.to >= res.total) {
@@ -108,10 +128,7 @@ const FormCreation: React.FC = () => {
       })
         .then((res) => {
           toast.success(res.message);
-          setSurvey(structuredClone(emptySurveyDetailsStructure));
-          setRenderDropdown((prev) => prev + 1);
-          fetchSurveys(true);
-          setSidebarOpen(false);
+          getBasePage()
         })
         .catch(() => {
           toast.error("Something Went Wrong");
@@ -127,10 +144,7 @@ const FormCreation: React.FC = () => {
       data: survey,
     })
       .then(() => {
-        setSurvey(structuredClone(emptySurveyDetailsStructure));
-        setRenderDropdown((prev) => prev + 1);
-        fetchSurveys(true);
-        setSidebarOpen(false);
+        getBasePage()
       })
       .catch(() => {
         toast.error("Something Went Wrong");
@@ -144,7 +158,7 @@ const FormCreation: React.FC = () => {
       method: server.deleteSurvey.method,
     })
       .then(() => {
-        fetchSurveys(true);
+        getBasePage()
       })
       .catch(() => {
         toast.error("Something Went Wrong");
@@ -174,7 +188,7 @@ const FormCreation: React.FC = () => {
         <div className="w-full overflow-x-auto">
           <InfiniteScroll
             dataLength={surveys.length}
-            next={() => fetchSurveys(false)}
+            next={() => {fetchSurveys(false)}}
             hasMore={hasMore}
             loader={
               <div className="w-100 text-center mb-2">
@@ -225,8 +239,14 @@ const FormCreation: React.FC = () => {
                       </td>
                       <td className="border border-gray-400 px-4 py-3">
                         <div className="w-full flex justify-around">
+                          <MdAddToPhotos
+                            className="text-2xl text-green-500 me-3"
+                            onClick={() => {
+                              navigate(client.questionaryCreation + `/${elem.surveyCode}`)
+                            }}
+                          />
                           <FiEdit3
-                            className="text-xl text-blue-500 me-3"
+                            className="text-2xl text-blue-500 me-3"
                             onClick={() => {
                               setActionIndex(index);
                               setSurvey(surveys[index]);
@@ -234,7 +254,7 @@ const FormCreation: React.FC = () => {
                             }}
                           />
                           <FaDeleteLeft
-                            className="text-xl text-red-500"
+                            className="text-2xl text-red-500"
                             onClick={() => {
                               setActionIndex(index);
                               setDeleteConfirmation(true);
@@ -274,6 +294,7 @@ const FormCreation: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap gap-4">
+
               <div className="mt-1 w-full px-2">
                 <span className="text-lg font-medium">Survey Name</span>
 
@@ -291,7 +312,7 @@ const FormCreation: React.FC = () => {
               </div>
 
               <div className="mt-1 w-full px-2">
-                <span className="text-lg font-medium">Survey Description</span>
+                <span className="text-lg font-medium">Survey Description (participant visibility)</span>
 
                 <textarea
                   className="px-3 py-3 w-100 border-1 pr-10 bg-slate-100 hover:bg-gray-200"
@@ -404,6 +425,20 @@ const FormCreation: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="mt-1 w-full px-2 flex justify-between">
+                <span className="text-lg font-medium">Multiple Submissions From Single Device</span>
+               
+                  <Switch
+                    checked={survey.allowMultipleSubmissions}
+                    onChange={(checked)=>{
+                      setSurvey((prev) => {
+                        return { ...prev, allowMultipleSubmissions: checked };
+                      });
+                    }}
+                  />
+              </div>
+
             </div>
             <div className="h-20"></div>
           </div>
@@ -449,4 +484,4 @@ const FormCreation: React.FC = () => {
   );
 };
 
-export default FormCreation;
+export default SurveyCreation;

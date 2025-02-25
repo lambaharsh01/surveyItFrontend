@@ -1,8 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { MdAddToPhotos } from "react-icons/md";
 
-import Header from "../../components/header";
+import { FiEdit3 } from "react-icons/fi";
+import { FaDeleteLeft } from "react-icons/fa6";
+
 import DropdownSearch from "../../components/dropdownSearch";
 import QuestionSection from "../../components/questionSection";
 import Switch from "../../components/switch";
@@ -17,10 +20,14 @@ import {
   QuestionTypeStructure,
   FileTypeStructure,
   QuestionStructure,
+  surveyDetailsStructure,
 } from "../../models/surveyInterface";
 import { optionsKeywords, validationKeywords } from "../../constants/survey";
 
-const FormCreation: React.FC = () => {
+const QuestionaryCreation: React.FC = () => {
+
+  const { surveyCode } = useParams()
+
   const emptyQuestionStructure: QuestionStructure = {
     text: "",
     questionTypeId: 0,
@@ -34,10 +41,12 @@ const FormCreation: React.FC = () => {
     max: 0,
   };
 
+  const [survey, setSurvey] = useState<surveyDetailsStructure|null>(null)
   const [questions, setQuestions] = useState<QuestionStructure[]>([]);
   const [question, setQuestion] = useState<QuestionStructure>(
     structuredClone(emptyQuestionStructure)
   );
+  const [disabled, setDisabled] = useState<boolean>(false)
 
   const [questionTypes, setQuestionTypes] = useState<QuestionTypeStructure[]>(
     []
@@ -50,8 +59,25 @@ const FormCreation: React.FC = () => {
     useState<FileTypeStructure | null>(null);
 
   const [renderDropdown, setRenderDropdown] = useState<number>(0);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [actionIndex, setActionIndex] = useState<number>(-1);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
+  const [deletedQuestionIds, setDeletedQuestionIds] = useState<number[]>([])
+
 
   useEffect(() => {
+
+    axiosInterceptor({
+      method: server.getSurvey.method,
+      url: server.getSurvey.url + `/${surveyCode}`,
+    })
+      .then((res) => {
+        setSurvey(res?.data ?? null)
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+    
     axiosInterceptor({
       method: server.getQuestionTypes.method,
       url: server.getQuestionTypes.url,
@@ -74,6 +100,11 @@ const FormCreation: React.FC = () => {
         toast.error(err.message);
       });
   }, []);
+
+  const handleSidebarClosure = ():void =>{
+    setSidebarOpen(false)
+    setActionIndex(-1)
+  };
 
   const handleQuestionRequiredChange = (checked: boolean): void => {
     setQuestion((prev) => {
@@ -111,8 +142,6 @@ const FormCreation: React.FC = () => {
       return { ...prev, fileTypeId: id, fileType: fileType };
     });
   };
-
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const handleAddOption = (): void => {
     setQuestion((prev) => {
@@ -159,7 +188,7 @@ const FormCreation: React.FC = () => {
   };
 
   const validateQuestionSave = (): void => {
-    if (question.text.trim().length < 35) {
+    if (question.text.trim().length < 3) {
       toast.warning("make sure to add more than 3 characters to the question");
       return;
     }
@@ -218,25 +247,77 @@ const FormCreation: React.FC = () => {
       }
     });
 
-    setQuestions((prev) => [...prev, question]);
-    setQuestion(structuredClone(emptyQuestionStructure));
+    setQuestions((prev) =>{ 
+      if(actionIndex >= 0){
+        prev[actionIndex] = question
+        return [...prev]
+      }
+      return [...prev, question]
+    });
 
+    setQuestion(structuredClone(emptyQuestionStructure));
     setSelectedQuestionType(null);
     setSelectedFileType(null);
     setRenderDropdown((prev) => prev + 1);
     setSidebarOpen(false);
+    setActionIndex(-1);
     toast.success("Question Added");
+  };
+
+  const stageQuestionEdit = (selectedQuestion:QuestionStructure , index:number):void => {
+
+    flushSync(() => {
+      
+      setSelectedQuestionType(questionTypes.filter((elem=>elem.id === selectedQuestion.questionTypeId))?.[0] ?? null)
+      setSelectedFileType(fileTypes.filter((elem=>elem.id === selectedQuestion.fileTypeId))?.[0] ?? null)
+      setQuestion(selectedQuestion)
+      setActionIndex(index)
+      setSidebarOpen(true)
+
+    })
+    setRenderDropdown(prev=> prev+1)
+  };
+
+  const stageQuestionDelete = (index:number):void => {
+      setActionIndex(index)
+      setDeleteConfirmation(true)
+  };
+
+  const questionDelete = ():void => {
+
+    
+
+    setQuestions(prev=>{      
+      var questionId = prev.splice(actionIndex, 1)?.[0].id ?? 0
+      if(questionId){
+        setDeletedQuestionIds(prevDeleted=>[...prevDeleted, questionId])
+      }
+      return [...prev]
+    })
+    setDeleteConfirmation(false)
+
+  };
+
+
+  // deleteConfirmation
+
+  const handleSurveyQuestionarySave = ():void =>{
+
+    setDisabled(true)
+
+    setTimeout(()=>{
+      setDisabled(false)
+    }, 3000)
+
   };
 
   return (
     <div className="min-h-screen creamBackground relative">
-      <Header />
-      <div className="h-14"></div>
 
-      <div className="w-full p-4">
+      <div className="w-full p-4 max-h-screen overflow-y-auto">
         <div className="w-full flex items-end justify-between">
-          <h1 className="mainFont ps-2">
-            <span className="appTextColor me-1 text-4xl">Create Survey</span>
+          <h1 className="mainFont">
+            <span className="me-1 text-4xl">Questionary <span className="text-2xl">({survey?.surveyName ?? ""})</span></span>
           </h1>
 
           <button
@@ -250,19 +331,47 @@ const FormCreation: React.FC = () => {
 
         <div className="w-100 pt-3 ps-3">
           {questions.map((elem, index) => (
-            <QuestionSection
-              index={index}
-              text={elem.text}
-              questionType={elem?.questionType || ""}
-              fileType={elem?.fileType || ""}
-              options={elem.options}
-              required={elem.required}
-              onChange={(str: string) => {
-                console.log(str);
-              }}
-            />
+            <>
+              <div className="w-full flex justify-end pe-2">
+                <FiEdit3 
+                  className="text-xl text-blue-500 me-3"
+                  onClick={()=>{stageQuestionEdit(elem, index)}}
+                />
+                <FaDeleteLeft 
+                  className="text-xl text-red-500"
+                  onClick={()=>{stageQuestionDelete(index)}}
+                />
+              </div>
+              <QuestionSection
+                index={index}
+                text={elem.text}
+                questionType={elem?.questionType || ""}
+                fileType={elem?.fileType || ""}
+                options={elem.options}
+                required={elem.required}
+                onChange={(str: string) => {console.log(str)}}
+              />
+            </>
           ))}
         </div>
+        <div className="h-14"/>
+      </div>
+
+      
+      <div className="absolute bottom-0 w-full px-4 pb-4 creamBackground">
+          {!sidebarOpen && questions.length > 0 && (
+              <button
+                disabled={disabled}
+                className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-full"
+                onClick={handleSurveyQuestionarySave}
+              >
+                {disabled ? (
+                  <div className="spinner-border spinner-border-sm text-white"></div>
+                ) : (
+                  <span>Save Questionary</span>
+                )}
+              </button>
+            )}
       </div>
 
       {/* ADD QUESTION */}
@@ -275,7 +384,7 @@ const FormCreation: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl ps-2">Add Question</h2>
               <button
-                onClick={() => setSidebarOpen(false)}
+                onClick={handleSidebarClosure}
                 className="text-4xl font-bold mb-3"
               >
                 {" "}
@@ -452,8 +561,34 @@ const FormCreation: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {deleteConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 className="text-lg text-center font-medium mb-4 text-gray-800">
+              Are you sure you want delete the survey?
+            </h2>
+            <br />
+            <div className="flex justify-around space-x-4">
+              <button
+                onClick={() => setDeleteConfirmation(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={questionDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
 
-export default FormCreation;
+export default QuestionaryCreation;
