@@ -21,6 +21,7 @@ import {
   FileTypeStructure,
   QuestionStructure,
   surveyDetailsStructure,
+  updateQuestionaryPayloadStructure,
 } from "../../models/surveyInterface";
 import { optionsKeywords, validationKeywords } from "../../constants/survey";
 
@@ -32,7 +33,7 @@ const QuestionaryCreation: React.FC = () => {
     text: "",
     questionTypeId: 0,
     questionType: "",
-    fileTypeId: 0,
+    fileTypeId: null,
     fileType: "",
     options: [],
     required: true,
@@ -285,8 +286,6 @@ const QuestionaryCreation: React.FC = () => {
 
   const questionDelete = ():void => {
 
-    
-
     setQuestions(prev=>{      
       var questionId = prev.splice(actionIndex, 1)?.[0].id ?? 0
       if(questionId){
@@ -301,14 +300,29 @@ const QuestionaryCreation: React.FC = () => {
 
   // deleteConfirmation
 
-  const handleSurveyQuestionarySave = ():void =>{
+  const handleQuestionaryFinalSave = ():void =>{
 
     setDisabled(true)
 
-    setTimeout(()=>{
-      setDisabled(false)
-    }, 3000)
+    const updateQuestionaryPayload : updateQuestionaryPayloadStructure = {
+      formId:survey?.id ?? 0,
+      questionary: questions,
+      deletedQuestionIds
+    }
 
+    axiosInterceptor({
+      method: server.updateQuestionary.method,
+      url: server.updateQuestionary.url,
+      data: updateQuestionaryPayload
+    })
+      .then((res) => {
+        toast.error(res.message);
+        setDisabled(false)
+      })
+      .catch((err) => {
+        toast.error(err.message);
+        setDisabled(false)
+      });
   };
 
   return (
@@ -363,7 +377,7 @@ const QuestionaryCreation: React.FC = () => {
               <button
                 disabled={disabled}
                 className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-full"
-                onClick={handleSurveyQuestionarySave}
+                onClick={handleQuestionaryFinalSave}
               >
                 {disabled ? (
                   <div className="spinner-border spinner-border-sm text-white"></div>

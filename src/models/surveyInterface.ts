@@ -51,3 +51,10 @@ export interface surveyDetailsStructure {
   createdAt?: string;
   active?: boolean;
 }
+
+
+export interface updateQuestionaryPayloadStructure {
+  formId: number
+  questionary: QuestionStructure[]
+  deletedQuestionIds: number[]
+}
