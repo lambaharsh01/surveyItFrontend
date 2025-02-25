@@ -7,8 +7,6 @@ import { LuLogOut } from "react-icons/lu";
 
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 
-import Header from "../components/header";
-
 import { client } from "../constants/urlPath";
 
 import { localStorageItems } from "../constants/localStorageDataDictionary";
@@ -40,7 +38,7 @@ export default function Dashboard() {
               <div className="w-20 h-20 p-2">
                 <div
                   className="w-full h-full iconSectionBlue border shadow-sm flex justify-center items-center rounded-lg"
-                  onClick={() => navigate(client.formCreation)}
+                  onClick={() => navigate(client.surveyCreation)}
                 >
                   <MdOutlineCreateNewFolder className="text-4xl" />
                 </div>

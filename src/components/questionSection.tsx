@@ -6,7 +6,7 @@ import Stars from "./stars";
 import Selects from "./selects";
 import Files from "./files";
 
-import { textInputsKeywords, checkboxKeywords } from "../utils/constants";
+import { textInputsKeywords, checkboxKeywords } from "../constants/survey";
 
 const QuestionSection: React.FC<QuestionSectionPropInterface> = ({ 
   index,

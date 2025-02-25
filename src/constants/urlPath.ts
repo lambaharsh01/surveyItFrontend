@@ -4,8 +4,13 @@ export const client = {
   forgotPassword: "/forgot-password",
 
   dashboard: "/dashboard",
-  formCreation: "/form-creation",
+  surveyCreation: "/survey-creation",
+  questionaryCreation: "/questionary-creation",
 };
+
+export const params  = {
+  surveyCode:"surveyCode" 
+}
 
 export const server = {
   signIn: { url: "/auth/sign-in", method: "post" },
@@ -19,6 +24,7 @@ export const server = {
   addSurvey: { url: "/fetch/add-survey", method: "post" },
   updateSurvey: { url: "/fetch/update-survey", method: "put" },
   getSurveys: { url: "/fetch/get-surveys", method: "post" },
+  getSurvey: { url: "/fetch/get-survey", method: "get" },
   deleteSurvey: { url: "/fetch/delete-survey", method: "delete" },
 };
 
