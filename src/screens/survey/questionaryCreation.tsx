@@ -104,8 +104,12 @@ const QuestionaryCreation: React.FC = () => {
   }, []);
 
   const handleSidebarClosure = ():void =>{
+    setSelectedQuestionType(null)
+    setSelectedFileType(null)
+    setQuestion(structuredClone(emptyQuestionStructure))
     setSidebarOpen(false)
     setActionIndex(-1)
+    setRenderDropdown((prev) => prev + 1);
   };
 
   const handleQuestionRequiredChange = (checked: boolean): void => {
@@ -164,6 +168,7 @@ const QuestionaryCreation: React.FC = () => {
 
   const handleQuestionValidationChange = (checked: boolean): void => {
     setQuestion((prev) => {
+      console.log(typeof(checked))
       return { ...prev, validation: checked };
     });
   };
