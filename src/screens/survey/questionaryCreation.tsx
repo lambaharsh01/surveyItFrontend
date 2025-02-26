@@ -69,11 +69,12 @@ const QuestionaryCreation: React.FC = () => {
   useEffect(() => {
 
     axiosInterceptor({
-      method: server.getSurvey.method,
-      url: server.getSurvey.url + `/${surveyCode}`,
+      method: server.getSurveyAndQuestionary.method,
+      url: server.getSurveyAndQuestionary.url + `/${surveyCode}`,
     })
       .then((res) => {
-        setSurvey(res?.data ?? null)
+        setSurvey(res?.survey ?? null)
+        setQuestions(res?.questionary ?? [])
       })
       .catch((err) => {
         toast.error(err.message);
@@ -305,7 +306,7 @@ const QuestionaryCreation: React.FC = () => {
     setDisabled(true)
 
     const updateQuestionaryPayload : updateQuestionaryPayloadStructure = {
-      formId:survey?.id ?? 0,
+      surveyId:survey?.id ?? 0,
       questionary: questions,
       deletedQuestionIds
     }
@@ -316,7 +317,7 @@ const QuestionaryCreation: React.FC = () => {
       data: updateQuestionaryPayload
     })
       .then((res) => {
-        toast.error(res.message);
+        toast.success(res.message);
         setDisabled(false)
       })
       .catch((err) => {

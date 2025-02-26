@@ -54,7 +54,7 @@ export interface surveyDetailsStructure {
 
 
 export interface updateQuestionaryPayloadStructure {
-  formId: number
+  surveyId: number
   questionary: QuestionStructure[]
   deletedQuestionIds: number[]
 }

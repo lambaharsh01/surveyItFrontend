@@ -24,7 +24,7 @@ export const server = {
   addSurvey: { url: "/fetch/add-survey", method: "post" },
   updateSurvey: { url: "/fetch/update-survey", method: "put" },
   getSurveys: { url: "/fetch/get-surveys", method: "post" },
-  getSurvey: { url: "/fetch/get-survey", method: "get" },
+  getSurveyAndQuestionary: { url: "/fetch/get-survey-and-questionary", method: "get" },
   deleteSurvey: { url: "/fetch/delete-survey", method: "delete" },
 
   updateQuestionary: { url: "/fetch/update-questionary", method: "post" },
