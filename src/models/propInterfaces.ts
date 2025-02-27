@@ -30,7 +30,7 @@ export interface QuestionSectionPropInterface {
   fileType: string;
   options: string[];
   required: boolean;
-  questionAlignment? : string;
+  questionAlignment : string;
   onChange: (data:string) => void;
 }
 

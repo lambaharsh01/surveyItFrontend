@@ -126,8 +126,8 @@ const SurveyCreation: React.FC = () => {
         url: server.addSurvey.url,
         data: survey,
       })
-        .then((res) => {
-          toast.success(res.message);
+        .then(() => {
+          toast.success("Survey Added");
           getBasePage()
         })
         .catch(() => {
@@ -145,6 +145,7 @@ const SurveyCreation: React.FC = () => {
     })
       .then(() => {
         getBasePage()
+        toast.success("Survey Updated")
       })
       .catch(() => {
         toast.error("Something Went Wrong");

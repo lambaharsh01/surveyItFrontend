@@ -268,7 +268,6 @@ const QuestionaryCreation: React.FC = () => {
     setRenderDropdown((prev) => prev + 1);
     setSidebarOpen(false);
     setActionIndex(-1);
-    toast.success("Question Added");
   };
 
   const stageQuestionEdit = (selectedQuestion:QuestionStructure , index:number):void => {
@@ -321,8 +320,8 @@ const QuestionaryCreation: React.FC = () => {
       url: server.updateQuestionary.url,
       data: updateQuestionaryPayload
     })
-      .then((res) => {
-        toast.success(res.message);
+      .then(() => {
+        toast.success("Questionary Saved");
         setDisabled(false)
       })
       .catch((err) => {
@@ -335,6 +334,12 @@ const QuestionaryCreation: React.FC = () => {
     <div className="min-h-screen creamBackground relative">
 
       <div className="w-full p-4 max-h-screen overflow-y-auto">
+        {survey?.active && (
+          <div className="alert w-100 alert-warning" role="alert">
+            Changing the Survey Mid Way Could lead to discrepancies
+          </div>
+        )}
+
         <div className="w-full flex items-end justify-between">
           <h1 className="mainFont">
             <span className="me-1 text-4xl">Questionary <span className="text-2xl">({survey?.surveyName ?? ""})</span></span>
@@ -370,6 +375,7 @@ const QuestionaryCreation: React.FC = () => {
                 options={elem.options}
                 required={elem.required}
                 onChange={(str: string) => {console.log(str)}}
+                questionAlignment={survey?.surveyAlignment ?? ""}
               />
             </>
           ))}

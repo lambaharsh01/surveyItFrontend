@@ -14,14 +14,13 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
   questionType,
   fileType,
   options,
-  required,
-  questionAlignment="start",
+  questionAlignment,
   onChange
 }) => {
 
   const [value, setValue] = useState<string>("")
 
-  const setTextInputValue = (e: ChangeEvent<HTMLInputElement> ):void =>{
+  const setTextInputValue = (e: ChangeEvent<HTMLInputElement>):void =>{
     const newValue: string = e.currentTarget.value
     setValue(newValue)
     onChange(newValue)
