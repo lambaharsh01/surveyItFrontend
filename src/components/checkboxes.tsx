@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { CheckboxPropInterface } from "../models/propInterfaces";
 import "../styles/checkboxes.css";
+import { shouldDisplayCheckboxesInColumn } from "../utils/screenWidth";
 
 const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, onChange }) => {
 
-  // const optionStringLength = options.join("").length 
-  // const inColumn:boolean = optionStringLength > 30
-  const inColumn:boolean = true
+  const inColumn:boolean = shouldDisplayCheckboxesInColumn(options)
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -47,7 +46,7 @@ const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, onC
                 </svg>
             </div>
             </div>
-            <span className={`text-lg font-medium w-full ${inColumn ? "ms-3" : "text-start"}`}>{option}</span>
+            <span className={`text-base font-medium w-full ${inColumn ? "ms-3" : "text-start"}`}>{option}</span>
             </div>
 
           <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
