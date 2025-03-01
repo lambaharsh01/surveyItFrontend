@@ -19,15 +19,16 @@ export const server = {
   checkOtp: { url: "/auth/check-otp", method: "post" },
   setPassword: { url: "/auth/set-password", method: "post" },
 
-  getQuestionTypes: { url: "/fetch/get-question-types", method: "get" },
-  getFileTypes: { url: "/fetch/get-file-types", method: "get" },
-  addSurvey: { url: "/fetch/add-survey", method: "post" },
-  updateSurvey: { url: "/fetch/update-survey", method: "put" },
-  getSurveys: { url: "/fetch/get-surveys", method: "post" },
-  getSurveyAndQuestionary: { url: "/fetch/get-survey-and-questionary", method: "get" },
-  deleteSurvey: { url: "/fetch/delete-survey", method: "delete" },
-
-  updateQuestionary: { url: "/fetch/update-questionary", method: "post" },
+  getQuestionTypes: { url: "/survey-creation/get-question-types", method: "get" },
+  getFileTypes: { url: "/survey-creation/get-file-types", method: "get" },
+  addSurvey: { url: "/survey-creation/add-survey", method: "post" },
+  updateSurvey: { url: "/survey-creation/update-survey", method: "put" },
+  getSurveys: { url: "/survey-creation/get-surveys", method: "post" },
+  getSurveyAndQuestionary: { url: "/survey-creation/get-survey-and-questionary", method: "get" },
+  deleteSurvey: { url: "/survey-creation/delete-survey", method: "delete" },
+  
+  updateQuestionary: { url: "/survey-creation/update-questionary", method: "post" },
+  fetchSurveyAndQuestionary: { url: "/survey-response/fetch-survey-and-questionary", method: "get" },
 };
 
 const endpoints = { client };

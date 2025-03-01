@@ -11,6 +11,7 @@ import SignUp from "./screens/auth/signUp";
 import ForgotPassword from "./screens/auth/forgotPassword";
 import SurveyCreation from "./screens/survey/surveyCreation";
 import QuestionaryCreation from "./screens/survey/questionaryCreation";
+import SurveyResponse from "./screens/response/surveyResponse";
 
 function Routing() {
   return (
@@ -33,6 +34,7 @@ function Routing() {
           <Route path={client.forgotPassword} element={<ForgotPassword />} />
           <Route path={client.surveyCreation} element={<SurveyCreation />} />
           <Route path={client.questionaryCreation + "/:" + params.surveyCode} element={<QuestionaryCreation />} />
+          <Route path={":" + params.surveyCode} element={<SurveyResponse />} />
         </Routes>
       </BrowserRouter>
     </div>

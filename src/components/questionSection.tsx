@@ -110,6 +110,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
           index={index}
           options={options}
           type={questionType === "checkbox" ? "checkbox" : "radio"}
+          questionAlignment={questionAlignment}
           onChange={handleStringedResponseAfterChange}
         />
       </div>

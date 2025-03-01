@@ -356,7 +356,7 @@ const SurveyCreation: React.FC = () => {
                 <Selects
                   key={"Select" + renderDropdown}
                   index={-1}
-                  options={["start", "center", "end"]}
+                  options={["start", "center"]}
                   onChange={(e) => {
                     const input: string = e;
                     setSurvey((prev) => {
