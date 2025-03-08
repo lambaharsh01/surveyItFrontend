@@ -50,7 +50,10 @@ const SurveyResponse: React.FC = () => {
     setDisabled(true)
     
 
-    // const data:QuestionWithResponseStructure[] = validateResponseSubmission(questions)
+    const data:any = validateResponseSubmission(questions)
+    
+
+    console.log(data)
   
     setDisabled(false)
 

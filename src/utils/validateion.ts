@@ -1,6 +1,6 @@
 import { QuestionWithResponseStructure } from "../models/surveyInterface"
 
-export const validateResponseSubmission = (questions: QuestionWithResponseStructure[]): ({message:string, data:QuestionWithResponseStructure[]}) => {
+export const validateResponseSubmission = (questions: QuestionWithResponseStructure[]): string => {
 
     for(let i:number = 0 ; i<questions.length ; i++){
 
@@ -9,18 +9,19 @@ export const validateResponseSubmission = (questions: QuestionWithResponseStruct
         const responseString = response?.trim() ?? ""
 
         if((required || validation) && !Boolean(responseString)){
-            return {message:`Question No. ${i} Required Response `, data:[]}
+            return `Question No. ${i+1} Required Response`
         }
         
         if(validation){
-            let value:number = questionType === "text" ? responseString.length : Number(responseString);
+            const length:number = questionType === "text" ? responseString.length : Number(responseString);
+            const minValidation:string = questionType === "text" ? `Can not have less length than ${length}` : `Can not be less than ${length}`
+            const maxValidation:string = questionType === "text" ? `Can not have more length than ${length}` : `Can not be more than ${length}`
 
-
-            if(value < min){
-                return {message:`Question No. ${i} Can Not be`, data:[]}
+            if(length < min){
+                return `Question No. ${i+1} ${minValidation}`
             }
-            if(value > max){
-
+            if(length > max){
+                return `Question No. ${i+1} ${maxValidation}`
             }
         }
 
@@ -28,5 +29,5 @@ export const validateResponseSubmission = (questions: QuestionWithResponseStruct
 
     }
 
-    return {message:"", data:questions}
+    return ""
 } 
