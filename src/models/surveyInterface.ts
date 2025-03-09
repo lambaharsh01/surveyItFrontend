@@ -58,3 +58,20 @@ export interface updateQuestionaryPayloadStructure {
   questionary: QuestionStructure[]
   deletedQuestionIds: number[]
 }
+
+
+
+export interface QuestionWithResponseStructure {
+  id:number;
+  text: string;
+  questionTypeId: number | null;
+  questionType: string | null;
+  fileTypeId: number | null;
+  fileType: string | null;
+  options: string[];
+  required: boolean;
+  validation: boolean;
+  min: number;
+  max: number;
+  response? : string;
+}

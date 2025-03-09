@@ -3,9 +3,9 @@ import { CheckboxPropInterface } from "../models/propInterfaces";
 import "../styles/checkboxes.css";
 import { shouldDisplayCheckboxesInColumn } from "../utils/screenWidth";
 
-const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, onChange }) => {
+const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, questionAlignment, onChange }) => {
 
-  const inColumn:boolean = shouldDisplayCheckboxesInColumn(options)
+  const inColumn:boolean = questionAlignment==="start" || shouldDisplayCheckboxesInColumn(options)
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 

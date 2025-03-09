@@ -14,6 +14,7 @@ export type CheckboxPropInterface = {
   options: string[];
   index: number;
   type?: "checkbox" | "radio";
+  questionAlignment: string;
   onChange: (selected: string) => void;
 };
 
