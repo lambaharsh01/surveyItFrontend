@@ -61,12 +61,12 @@ const SignIn: React.FC = () => {
             <span className="outlined-text-medium-thin text-7xl ">In</span>
           </h1>
         </div>
-        <div className="bg-white col-lg-8 col-12 offset-0 offset-lg-2 h-5/6 rounded-t-3xl flex-row overflow-y-auto">
+        <div className="bg-white col-lg-8 col-12 offset-0 offset-lg-2 h-5/6 flex-row overflow-y-auto">
           <div className="w-75 m-auto py-md-4 pt-4 pb-3 h-100 flex flex-col justify-between h-full">
             <div>
               <input
                 type="email"
-                className="px-8 py-3 mb-4 mt-5 rounded-md w-100 bg-slate-100"
+                className="px-8 py-3 mb-4 mt-5 w-100 bg-slate-100"
                 placeholder="Enter Email"
                 value={userEmail}
                 onChange={(e) => setUserEmail(e.currentTarget.value)}
@@ -75,7 +75,7 @@ const SignIn: React.FC = () => {
               <div className="relative w-full">
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="px-8 py-3 mb-4 rounded-md w-100 bg-slate-100 pr-10"
+                  className="px-8 py-3 mb-4 w-100 bg-slate-100 pr-10"
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.currentTarget.value)}
@@ -118,7 +118,7 @@ const SignIn: React.FC = () => {
             <div className="mb-14">
               <button
                 disabled={disabled}
-                className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
+                className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-100"
                 onClick={authenticateUser}
               >
                 {disabled ? (

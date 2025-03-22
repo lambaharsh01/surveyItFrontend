@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { MdAddToPhotos } from "react-icons/md";
+import { emailRegex } from "../../utils/regex";
 
 import QuestionSection from "../../components/questionSection";
 
@@ -13,21 +14,44 @@ import axiosInterceptor from "../../utils/axiosInterceptor";
 import {
   QuestionWithResponseStructure,
   surveyDetailsStructure,
+  SurveyResponseStructure
 } from "../../models/surveyInterface";
 
-import { validateResponseSubmission } from "../../utils/validateion";
+import { validateResponseSubmission } from "../../utils/validation";
 
 const SurveyResponse: React.FC = () => {
 
   const { surveyCode } = useParams()
 
   const [survey, setSurvey] = useState<surveyDetailsStructure|null>(null)
+  const [respondentEmail, setRespondentEmail] = useState<string>("")
+
   const [questions, setQuestions] = useState<QuestionWithResponseStructure[]>([]);
 
   const [disabled, setDisabled] = useState<boolean>(false)
+  const [formSubmitted, setFormSubmitted] = useState<boolean>(false)
 
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
+
+  // Heading scrollablity 
+
+  const [isVisible, setIsVisible] = useState(true);
+  let lastScrollY = 0;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false); // Hide on scroll down
+      } else {
+        setIsVisible(true); // Show on scroll up
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
 
   useEffect(() => {
@@ -46,18 +70,46 @@ const SurveyResponse: React.FC = () => {
  
   }, []);
 
-  const handleSubmit = ():void =>{
+  const handleSubmit = async():Promise<void> =>{
+    
+    const isValidEmail = emailRegex.test(respondentEmail)
+    if(!isValidEmail){
+      toast.warning("Please enter a valid Respondent Email")
+      return
+    }
+
+    const validationPending:string = validateResponseSubmission(questions)
+
+    if(validationPending){
+      toast.warning(validationPending)
+      return
+    }
+
+    const surveyResponse: SurveyResponseStructure[] =  questions.map((elem)=>({questionId: elem.id, questionTypeId: elem.questionTypeId, response:elem.response}))
+    const surveyId = survey?.id
+
+    if(!surveyId){
+      toast.error("Process Can not be completed due to missing survey ID")
+      return
+    }
+
     setDisabled(true)
-    
+    axiosInterceptor({
+      method: server.surveySubmission.method,
+      url: server.surveySubmission.url,
+      data:{
+        respondentEmail,
+        surveyId,
+        surveyResponse,
+      }
+    }).then(() => {
+      setFormSubmitted(true)
+    }).catch((err) => {
+      toast.error(err.message);
+    }).finally(()=>{
+      setDisabled(false)
+    });
 
-    const data:any = validateResponseSubmission(questions)
-    
-
-    console.log(data)
-  
-    setDisabled(false)
-
-    
   };
 
   const handleResponse = (res: string, index:number):void =>{
@@ -69,18 +121,53 @@ const SurveyResponse: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen creamBackground relative">
+    !formSubmitted ? ( 
 
-      <div className="w-full p-4 max-h-screen overflow-y-auto">
-        <div className={`w-full flex items-end justify-${survey?.surveyAlignment}`}>
-          <h1 className="mainFont">
-            <span className="me-1 text-4xl">Questionary <span className="text-2xl">({survey?.surveyName ?? ""})</span></span>
-          </h1>
-        </div>
+      <div className="min-h-screen bg-slate-100 p-4">    
+        <div className="max-w-6xl mx-auto">
 
-        <div className="w-100 pt-3 ps-3">
-          {questions.map((elem, index) => (
+          <div className= "z-20 w-full">
+            <div className="max-w-6xl mx-auto">
+              <header className="bg-white shadow p-4 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center">
+                  <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">
+                    {survey?.surveyName ? `${survey.surveyName}` : ""}
+                  </h1>
+                  <div className="flex space-x-3">
+                    {/* Additional header actions can go here if needed */}
+                  </div>
+                </div>
+              </header>
+            </div>
+          </div>
+
+          <div className="bg-white shadow overflow-hidden mb-6">
+            <div className="px-4 py-5 sm:px-6">
+              <div className="mb-4">
+                <label className="block text-lg font-medium appTextColor">
+                  Respondent Email
+                  <span className="text-red-500"> *</span>
+                </label>
+                <input
+                  type="text"
+                  className="mt-2 w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your email"
+                  value={respondentEmail}
+                  onChange={(e)=>setRespondentEmail(e.currentTarget.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white shadow overflow-hidden mb-6">
+          <div className="px-4 py-5 sm:px-6">
+            <h2 className="text-lg font-medium appTextColor">Survey Questions</h2>
+            <p className="mt-1 text-sm text-gray-500">Please answer all required questions.</p>
+          </div>
+          <div className="divide-y divide-gray-200">
+            {questions.map((elem, index) => (
               <QuestionSection
+                key={"question" + index}
                 index={index}
                 text={elem.text}
                 questionType={elem?.questionType || ""}
@@ -90,27 +177,52 @@ const SurveyResponse: React.FC = () => {
                 onChange={(res: string) =>handleResponse(res, index)}
                 questionAlignment={survey?.surveyAlignment ?? ""}
               />
-          ))}
+            ))}
+          </div>
+          </div>
+            
+          <div className="p-4 bg-white border-t shadow border-gray-200">
+            <div className="max-w-6xl mx-auto">
+              <button
+                disabled={disabled}
+                className="w-full px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                onClick={handleSubmit}
+              >
+                {disabled ? (
+                  <div className="spinner-border spinner-border-sm text-white"></div>
+                ) : (
+                  <span>Submit Response</span>
+                )}
+              </button>
+            </div>
+          </div>
+
         </div>
-      
       </div>
 
-      
-      <div className="w-full px-4 pb-4 creamBackground">  
-        <button
-          disabled={disabled}
-          className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-full"
-          onClick={handleSubmit}
-        >
-          {disabled ? (
-            <div className="spinner-border spinner-border-sm text-white"></div>
-          ) : (
-            <span>Submit Response</span>
-          )}
-        </button>
+    ):(
+
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
+        <div className="max-w-md w-full bg-white shadow-lg p-6 text-center">
+          <div className="flex justify-center">
+            <svg
+              className="h-16 w-16 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h1 className="mt-4 text-2xl font-semibold text-gray-800">Thank You!</h1>
+          <p className="mt-2 text-gray-600">Your response has been successfully submitted.</p>
+          <p className="mt-1 text-gray-500 text-sm">Your feedback is appreciate.</p>
+        </div>
       </div>
 
-    </div>
+    )
   );
 };
 
