@@ -50,6 +50,7 @@ export interface surveyDetailsStructure {
   activeTo: string;
   createdAt?: string;
   active?: boolean;
+  responses?: number;
 }
 
 
@@ -75,3 +76,9 @@ export interface QuestionWithResponseStructure {
   max: number;
   response? : string;
 }
+
+export interface SurveyResponseStructure {
+  questionId: number;
+  response?: string;
+}
+

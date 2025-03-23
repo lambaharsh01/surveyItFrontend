@@ -40,12 +40,12 @@ export default async function axiosInterceptor({
     if (!url) throw new Error("Url not provided");
 
     const apiMethod = method.toLowerCase().trim();
-    let apiUrl = "http://localhost:3031/api";
-    // let apiUrl = "http://10.35.20.145:3031/api";
+    // let apiUrl = "http://localhost:3031/api";
+    let apiUrl = "http://103.174.103.173:3031/api";
     apiUrl += url.trim() + convertQueryString(query);
 
     const axiosInstance: AxiosInstance = axios.create();
-    // npm run dev -- --host 10.35.20.145
+    // npm run dev -- --host  10.80.140.92
 
     axiosInstance.interceptors.request.use(
       (req: InternalAxiosRequestConfig) => {

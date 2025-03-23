@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { MdAddToPhotos } from "react-icons/md";
 
+import { IoMdInformationCircle } from "react-icons/io";
+
 import { FiEdit3 } from "react-icons/fi";
 import { FaDeleteLeft } from "react-icons/fa6";
 
@@ -27,6 +29,7 @@ import { optionsKeywords, validationKeywords } from "../../constants/survey";
 
 const QuestionaryCreation: React.FC = () => {
 
+  const [showInfo, setShowInfo] = useState<boolean>(true)
   const { surveyCode } = useParams()
 
   const emptyQuestionStructure: QuestionStructure = {
@@ -67,6 +70,8 @@ const QuestionaryCreation: React.FC = () => {
 
 
   useEffect(() => {
+
+    setTimeout(()=>setShowInfo(false), 5000)
 
     axiosInterceptor({
       method: server.getSurveyAndQuestionary.method,
@@ -284,6 +289,10 @@ const QuestionaryCreation: React.FC = () => {
     setRenderDropdown(prev=> prev+1)
   };
 
+  useEffect(()=>{
+    console.log(question)
+  }, [question])
+
   const stageQuestionDelete = (index:number):void => {
       setActionIndex(index)
       setDeleteConfirmation(true)
@@ -334,9 +343,22 @@ const QuestionaryCreation: React.FC = () => {
     <div className="min-h-screen creamBackground relative">
 
       <div className="w-full p-4 max-h-screen overflow-y-auto">
-        {survey?.active && (
-          <div className="alert w-100 alert-warning" role="alert">
-            Changing the Survey Mid Way Could lead to discrepancies
+
+        {showInfo ? (
+          <>
+            {survey?.active && (
+              <div className="alert w-100 alert-warning rounded-0" role="alert">
+                Changing the Survey Mid Way Could lead to discrepancies
+              </div>
+            )}
+
+            <div className="alert w-100 alert-primary rounded-0" role="alert">
+              The respondent's email will always be included as a required field in the survey form. As the survey creator, you don’t need to manually add it—it will automatically be present when respondents fill out the form.
+            </div>
+          </>
+        ):(
+          <div className="w-full flex justify-end pb-3">
+            <IoMdInformationCircle className="text-3xl" onClick={()=>setShowInfo(true)}/>
           </div>
         )}
 
@@ -388,7 +410,7 @@ const QuestionaryCreation: React.FC = () => {
           {!sidebarOpen && questions.length > 0 && (
               <button
                 disabled={disabled}
-                className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-full"
+                className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-full"
                 onClick={handleQuestionaryFinalSave}
               >
                 {disabled ? (
@@ -431,6 +453,7 @@ const QuestionaryCreation: React.FC = () => {
 
                   <span>
                     <Switch
+                      key={"switchFor" + actionIndex}
                       checked={question.required}
                       onChange={handleQuestionRequiredChange}
                     />
@@ -578,7 +601,7 @@ const QuestionaryCreation: React.FC = () => {
           <div className="w-full px-4 py-3 bg-white shadow-md absolute bottom-0 left-0 right-0">
             <div className="w-full px-2">
               <button
-                className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
+                className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-100"
                 onClick={validateQuestionSave}
               >
                 Save
@@ -590,7 +613,7 @@ const QuestionaryCreation: React.FC = () => {
 
       {deleteConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+          <div className="bg-white p-6 w-96 shadow-lg">
             <h2 className="text-lg text-center font-medium mb-4 text-gray-800">
               Are you sure you want delete the survey?
             </h2>
@@ -598,13 +621,13 @@ const QuestionaryCreation: React.FC = () => {
             <div className="flex justify-around space-x-4">
               <button
                 onClick={() => setDeleteConfirmation(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 text-gray-700 hover:bg-gray-400"
               >
                 Cancel
               </button>
               <button
                 onClick={questionDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="px-4 py-2 bg-red-500 text-white hover:bg-red-600"
               >
                 Delete
               </button>

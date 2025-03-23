@@ -191,7 +191,7 @@ const ForgotPassword: React.FC = () => {
           </h1>
         </div>
         <div
-          className="bg-white col-lg-8 col-12 offset-0 offset-lg-2 h-5/6 rounded-t-3xl flex-row overflow-y-auto"
+          className="bg-white col-lg-8 col-12 offset-0 offset-lg-2 h-5/6 flex-row overflow-y-auto"
           ref={scrollableDivRef}
         >
           {screen === 0 && (
@@ -199,7 +199,7 @@ const ForgotPassword: React.FC = () => {
               <h2 className="mb-4">User Details</h2>
               <input
                 type="text"
-                className="px-8 py-3 mb-4 rounded-md w-100 bg-slate-100"
+                className="px-8 py-3 mb-4 w-100 bg-slate-100"
                 placeholder="Enter Email"
                 value={userEmail}
                 onChange={(e) =>
@@ -210,7 +210,7 @@ const ForgotPassword: React.FC = () => {
               <div className="absolute bottom-14 col-9 col-lg-6">
                 <button
                   disabled={disabled}
-                  className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
+                  className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-100"
                   onClick={sendVerificationCode}
                 >
                   {disabled ? (
@@ -229,7 +229,7 @@ const ForgotPassword: React.FC = () => {
 
               <input
                 type="number"
-                className="px-8 py-3 mb-4 rounded-md w-100 bg-slate-100"
+                className="px-8 py-3 mb-4 w-100 bg-slate-100"
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.currentTarget.value)}
@@ -238,7 +238,7 @@ const ForgotPassword: React.FC = () => {
               <div className="absolute bottom-14 col-9 col-lg-6">
                 <button
                   disabled={disabled}
-                  className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
+                  className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-100"
                   onClick={verifyOtp}
                 >
                   {disabled ? (
@@ -257,7 +257,7 @@ const ForgotPassword: React.FC = () => {
 
               <input
                 type="password"
-                className="px-8 py-3 mb-4 rounded-md w-100 bg-slate-100"
+                className="px-8 py-3 mb-4 w-100 bg-slate-100"
                 placeholder="Enter Password"
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
@@ -265,7 +265,7 @@ const ForgotPassword: React.FC = () => {
 
               <input
                 type="password"
-                className="px-8 py-3 mb-4 rounded-md w-100 bg-slate-100"
+                className="px-8 py-3 mb-4 w-100 bg-slate-100"
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.currentTarget.value)}
@@ -278,15 +278,15 @@ const ForgotPassword: React.FC = () => {
               </span>
               <div className="w- flex justify-around mt-2 mb-5">
                 <span
-                  className={`h-1 rounded-md ${passStColor.first}`}
+                  className={`h-1 ${passStColor.first}`}
                   style={{ width: "31%" }}
                 />
                 <span
-                  className={`h-1 rounded-md ${passStColor.second}`}
+                  className={`h-1 ${passStColor.second}`}
                   style={{ width: "31%" }}
                 />
                 <span
-                  className={`h-1 rounded-md ${passStColor.third}`}
+                  className={`h-1 ${passStColor.third}`}
                   style={{ width: "31%" }}
                 />
               </div>
@@ -294,7 +294,7 @@ const ForgotPassword: React.FC = () => {
               <div className="absolute bottom-14 col-9 col-lg-6">
                 <button
                   disabled={disabled}
-                  className="bg-slate-950 rounded-md text-white text-lg px-md-12 px-8 py-3 w-100"
+                  className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-100"
                   onClick={createUser}
                 >
                   {disabled ? (

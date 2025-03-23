@@ -29,6 +29,10 @@ export const server = {
   
   updateQuestionary: { url: "/survey-creation/update-questionary", method: "post" },
   fetchSurveyAndQuestionary: { url: "/survey-response/fetch-survey-and-questionary", method: "get" },
+
+  surveySubmission: { url: "/survey-response/survey-submission", method: "post" },
+
+
 };
 
 const endpoints = { client };

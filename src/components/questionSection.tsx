@@ -15,6 +15,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
   fileType,
   options,
   questionAlignment,
+  required,
   onChange
 }) => {
 
@@ -37,106 +38,94 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
   }
 
   return ( 
-  <motion.div 
-    key={index} 
-    className="mb-4 border-b-2"
-    initial={{ opacity: 0, x: -10 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 1, delay: index * 0.2 }}
-  >
-    <p className={`text-lg font-medium bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent text-${questionAlignment}`}>
+<motion.div 
+  key={index} 
+  className="px-4 py-5 sm:px-6"
+  initial={{ opacity: 0, x: -10 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 1, delay: index * 0.2 }}
+>
+  <div className="mb-2">
+    <h2 className={`text-lg font-medium appTextColor text-${questionAlignment}`}>
       {(index+1)+". "}{text}
-    </p>
+      <span className="text-red-500">{required && " *"}</span>
+    </h2>
+  </div>
 
+  <div className="w-full">
     {textInputsKeywords.includes(questionType) && (
-      <div className="w-full px-2">
-        <input
-          type="text"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
-          placeholder="Enter"
-          value={value}
-          onChange={setTextInputValue}
-        />
-      </div>
+      <input
+        type="text"
+        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter"
+        value={value}
+        onChange={setTextInputValue}
+      />
     )}
 
     {questionType==="textarea" && (
-      <div className="w-full px-2">
-        <textarea
-          rows={3}
-          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
-          placeholder="Enter"
-          value={value}
-          onChange={setTextareaInputValue}
-        />
-      </div>
+      <textarea
+        rows={3}
+        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter"
+        value={value}
+        onChange={setTextareaInputValue}
+      />
     )}
 
     {questionType==="number" && (
-      <div className="w-full px-2">
-        <input
-          type="number"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
-          placeholder="Enter"
-          value={value}
-          onChange={setTextInputValue}
-        />
-      </div>
+      <input
+        type="number"
+        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter"
+        value={value}
+        onChange={setTextInputValue}
+      />
     )}
 
     {questionType==="date" && (
-      <div className="w-full px-2">
-        <input
-          type="date"
-          className="px-3 py-3 mb-4 w-100 bg-slate-100 hover:bg-gray-200"
-          value={value}
-          onChange={setTextInputValue}
-        />
-      </div>
+      <input
+        type="date"
+        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={value}
+        onChange={setTextInputValue}
+      />
     )}
 
     {questionType==="star" && (
-      <div className="w-full px-2">
-        <Stars
-          questionAlignment={questionAlignment}
-          onChange={handleStringedResponseAfterChange}
-        />
-      </div>
+      <Stars
+        questionAlignment={questionAlignment}
+        onChange={handleStringedResponseAfterChange}
+      />
     )}
     
     {checkboxKeywords.includes(questionType) && (
-      <div className="w-full px-2">
-        <Checkboxes
-          index={index}
-          options={options}
-          type={questionType === "checkbox" ? "checkbox" : "radio"}
-          questionAlignment={questionAlignment}
-          onChange={handleStringedResponseAfterChange}
-        />
-      </div>
+      <Checkboxes
+        index={index}
+        options={options}
+        type={questionType === "checkbox" ? "checkbox" : "radio"}
+        questionAlignment={questionAlignment}
+        onChange={handleStringedResponseAfterChange}
+      />
     )}
 
     {questionType==="select" && (
-      <div className="w-full px-2">
-        <Selects
-          index={index}
-          options={options}
-          onChange={handleStringedResponseAfterChange}
-        />
-      </div>
+      <Selects
+        index={index}
+        options={options}
+        onChange={handleStringedResponseAfterChange}
+      />
     )}
     
     {questionType==="file" && (
-      <div className="w-full px-2">
-        <Files
-          fileType={fileType}
-          onChange={handleStringedResponseAfterChange}
-        />
-      </div>
+      <Files
+        fileType={fileType}
+        onChange={handleStringedResponseAfterChange}
+      />
     )}
+  </div>
+</motion.div>
 
-
-  </motion.div>
   );
 };
 
