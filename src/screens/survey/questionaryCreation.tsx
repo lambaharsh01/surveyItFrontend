@@ -1,12 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { MdAddToPhotos } from "react-icons/md";
 
 import { IoMdInformationCircle } from "react-icons/io";
-
-import { FiEdit3 } from "react-icons/fi";
-import { FaDeleteLeft } from "react-icons/fa6";
 
 import DropdownSearch from "../../components/dropdownSearch";
 import QuestionSection from "../../components/questionSection";
@@ -272,36 +269,9 @@ const QuestionaryCreation: React.FC = () => {
     setActionIndex(-1);
   };
 
-  const stageQuestionEdit = (
-    selectedQuestion: QuestionStructure,
-    index: number
-  ): void => {
-    flushSync(() => {
-      setSelectedQuestionType(
-        questionTypes.filter(
-          (elem) => elem.id === selectedQuestion.questionTypeId
-        )?.[0] ?? null
-      );
-      setSelectedFileType(
-        fileTypes.filter(
-          (elem) => elem.id === selectedQuestion.fileTypeId
-        )?.[0] ?? null
-      );
-      setQuestion(selectedQuestion);
-      setActionIndex(index);
-      setSidebarOpen(true);
-    });
-    setRenderDropdown((prev) => prev + 1);
-  };
-
   useEffect(() => {
     console.log(question);
   }, [question]);
-
-  const stageQuestionDelete = (index: number): void => {
-    setActionIndex(index);
-    setDeleteConfirmation(true);
-  };
 
   const questionDelete = (): void => {
     setQuestions((prev) => {

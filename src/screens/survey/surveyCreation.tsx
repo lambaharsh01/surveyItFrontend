@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { flushSync } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -9,8 +8,6 @@ import axiosInterceptor from "../../utils/axiosInterceptor";
 
 import { surveyDetailsStructure } from "../../models/surveyInterface";
 import Selects from "../../components/selects";
-import Switch from "../../components/switch";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const SurveyCreation: React.FC = () => {
   const location = useLocation();

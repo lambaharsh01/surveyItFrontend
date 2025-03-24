@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { FiDownload, FiSearch } from "react-icons/fi";
 import { MdClear } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { useParams } from "react-router-dom";
 import axiosInterceptor from "../../utils/axiosInterceptor";
-import { client, server } from "../../constants/urlPath";
+import { server } from "../../constants/urlPath";
 import { toast } from "react-toastify";
 import { GetResponseStructure } from "../../models/surveyInterface";
 
