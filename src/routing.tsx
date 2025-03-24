@@ -3,7 +3,6 @@ import { ToastContainer } from "react-toastify";
 
 import { client, params } from "./constants/urlPath";
 
-// import Index from "./screens/index";
 import Dashboard from "./screens/dashboard";
 
 import SignIn from "./screens/auth/signIn";
