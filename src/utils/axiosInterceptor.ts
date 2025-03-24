@@ -40,7 +40,7 @@ export default async function axiosInterceptor({
     if (!url) throw new Error("Url not provided");
 
     const apiMethod = method.toLowerCase().trim();
-    let apiUrl = "http://localhost:3031/api";
+    let apiUrl = "https://surveyit-backend.lambaharsh01.in/api";
     // let apiUrl = "http://103.174.103.173:3031/api";
     apiUrl += url.trim() + convertQueryString(query);
 
