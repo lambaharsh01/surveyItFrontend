@@ -56,7 +56,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
     {textInputsKeywords.includes(questionType) && (
       <input
         type="text"
-        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-6 py-3 bg-gray-50 border-b border-b-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Enter"
         value={value}
         onChange={setTextInputValue}
@@ -66,7 +66,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
     {questionType==="textarea" && (
       <textarea
         rows={3}
-        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-6 py-3 bg-gray-50 border-b border-b-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Enter"
         value={value}
         onChange={setTextareaInputValue}
@@ -76,7 +76,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
     {questionType==="number" && (
       <input
         type="number"
-        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-6 py-3 bg-gray-50 border-b border-b-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Enter"
         value={value}
         onChange={setTextInputValue}
@@ -86,7 +86,7 @@ const QuestionSection: React.FC<QuestionSectionPropInterface> = ({
     {questionType==="date" && (
       <input
         type="date"
-        className="w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-6 py-3 bg-gray-50 border-b border-b-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         value={value}
         onChange={setTextInputValue}
       />

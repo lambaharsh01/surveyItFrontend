@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { MdAddToPhotos } from "react-icons/md";
+import { FaDeleteLeft } from "react-icons/fa6";
 
 import { IoMdInformationCircle } from "react-icons/io";
 
@@ -387,21 +388,32 @@ const QuestionaryCreation: React.FC = () => {
                   Please answer all required questions.
                 </p>
               </div>
-              <div className="divide-y divide-gray-200">
+              <div>
                 {questions.map((elem, index) => (
-                  <QuestionSection
-                    key={"question" + index}
-                    index={index}
-                    text={elem.text}
-                    questionType={elem?.questionType || ""}
-                    fileType={elem?.fileType || ""}
-                    options={elem.options}
-                    required={elem.required}
-                    onChange={(res: string) => {
-                      console.log(res);
-                    }}
-                    questionAlignment={survey?.surveyAlignment ?? ""}
-                  />
+                  <div className="border-b-2 border-b-gray-200">
+                  <span className="w-full flex justify-end ">
+                    <FaDeleteLeft
+                      className="text-xl text-red-600 hover:text-red-700 cursor-pointer me-3 mt-3"
+                      onClick={() => {
+                        setActionIndex(index);
+                        setDeleteConfirmation(true);
+                      }}
+                    />
+                  </span>
+                    <QuestionSection
+                      key={"question" + index}
+                      index={index}
+                      text={elem.text}
+                      questionType={elem?.questionType || ""}
+                      fileType={elem?.fileType || ""}
+                      options={elem.options}
+                      required={elem.required}
+                      onChange={(res: string) => {
+                        console.log(res);
+                      }}
+                      questionAlignment={survey?.surveyAlignment ?? ""}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
