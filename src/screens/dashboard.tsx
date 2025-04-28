@@ -65,7 +65,23 @@ const Dashboard: React.FC = () => {
           setPage(1);
         } else {
           setPage((prev) => prev + 1);
-          setSurveys((prev) => [...prev, ...res.data]);
+          
+          setSurveys((prev) => {
+
+            const rawArray: surveyDetailsStructure[] = [...prev, ...res.data]
+            const uniqueSurveyIds: Set<number> = new Set<number>();
+            const uniqueSurveys: surveyDetailsStructure[] = [] 
+            
+            for(const survey of  rawArray) {
+              if(!survey.id) continue;
+              if(uniqueSurveyIds.has(survey.id)) continue;
+
+              uniqueSurveyIds.add(survey.id);
+              uniqueSurveys.push(survey);
+            }
+
+            return uniqueSurveys
+          });
         }
       })
       .catch((err) => {
