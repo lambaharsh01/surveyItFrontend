@@ -204,7 +204,8 @@ const SurveyResponse: React.FC = () => {
         </p>
       </div>
     </div>
-  );
+  )
+);
 };
 
 export default SurveyResponse;
