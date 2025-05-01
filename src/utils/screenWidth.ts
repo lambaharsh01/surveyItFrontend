@@ -9,7 +9,7 @@ export const isMoreScreenWidth = (): number => {
 export const shouldDisplayCheckboxesInColumn = (labels: string[]): boolean => {
   const screenWidth: number = window.innerWidth;
   const totalStringLength: number = labels.reduce((sum, label) => sum + label.length, 0);
-  const threshold: number = screenWidth / 11;
+  const threshold: number = screenWidth / 15
 
   return totalStringLength > threshold;
 };

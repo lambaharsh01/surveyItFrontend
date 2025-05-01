@@ -27,8 +27,10 @@ const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, que
       {options.map((option, index2) => (
         <div className="checkbox-wrapper-12 mb-2.5" key={`cbx-${index2}`}>
 
-<div className={`flex items-center ${inColumn ? "w-full justify-start" : "flex-col"}`}>
-            <div className={`flex ${inColumn ? "justify-start ms-3" :"justify-center"} `}>
+<div className={`flex items-center ${questionAlignment==="center" && inColumn ? "w-full justify-center":
+                                      inColumn ? "w-full justify-start" : "flex-col"}`}>
+  <div className="flex">
+            <div className={`flex ${inColumn ? "justify-start ms-3" :"justify-center"} pe-2`}>
               <div className="cbx">
                 <input 
                   id={`checkbox-${index + "_" + index2}`}
@@ -47,6 +49,7 @@ const Checkboxes: React.FC<CheckboxPropInterface> = ({ options, type, index, que
             </div>
             </div>
             <span className={`text-base font-medium w-full ${inColumn ? "ms-3" : "text-start"}`}>{option}</span>
+  </div>          
             </div>
 
           <svg xmlns="http://www.w3.org/2000/svg" version="1.1">

@@ -129,7 +129,7 @@ const SurveyResponse: React.FC = () => {
           <div className= "z-20 w-full">
             <div className="max-w-6xl mx-auto">
               <header className="bg-white shadow p-4 mb-6">
-                <div className="flex flex-col sm:flex-row justify-between items-center">
+                <div className={`flex flex-col sm:flex-row items-${survey?.surveyAlignment ?? "start"}`}>
                   <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">
                     {survey?.surveyName ? `${survey.surveyName}` : ""}
                   </h1>
@@ -144,7 +144,7 @@ const SurveyResponse: React.FC = () => {
           <div className="bg-white shadow overflow-hidden mb-6">
             <div className="px-4 py-5 sm:px-6">
               <div className="mb-4">
-                <label className="block text-lg font-medium appTextColor">
+                <label className={`block text-lg font-medium appTextColor text-${survey?.surveyAlignment ?? "start"}`}>
                   Respondent Email
                   <span className="text-red-500"> *</span>
                 </label>
@@ -160,10 +160,6 @@ const SurveyResponse: React.FC = () => {
           </div>
 
           <div className="bg-white shadow overflow-hidden mb-6">
-          <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-lg font-medium appTextColor">Survey Questions</h2>
-            <p className="mt-1 text-sm text-gray-500">Please answer all required questions.</p>
-          </div>
           <div className="divide-y divide-gray-200">
             {questions.map((elem, index) => (
               <QuestionSection
@@ -175,7 +171,7 @@ const SurveyResponse: React.FC = () => {
                 options={elem.options}
                 required={elem.required}
                 onChange={(res: string) =>handleResponse(res, index)}
-                questionAlignment={survey?.surveyAlignment ?? ""}
+                questionAlignment={survey?.surveyAlignment ?? "start"}
               />
             ))}
           </div>
