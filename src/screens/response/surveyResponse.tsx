@@ -109,8 +109,8 @@ const SurveyResponse: React.FC = () => {
           <div className= "z-20 w-full">
             <div className="max-w-6xl mx-auto">
               <header className="bg-white shadow p-4 mb-6">
-                <div className={`flex flex-col sm:flex-row items-${survey?.surveyAlignment ?? "start"}`}>
-                  <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">
+                <div className={`flex flex-col sm:flex-row justify-${survey?.surveyAlignment ?? "start"}`}>
+                  <h1 className={`text-xl font-bold appTextColor mb-4 sm:mb-0 text-${survey?.surveyAlignment ?? "start"}`}>
                     {survey?.surveyName ? `${survey.surveyName}` : ""}
                   </h1>
                   <div className="flex space-x-3">
