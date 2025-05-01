@@ -1,12 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { flushSync } from "react-dom";
 import { MdAddToPhotos } from "react-icons/md";
+import { FaDeleteLeft } from "react-icons/fa6";
 
 import { IoMdInformationCircle } from "react-icons/io";
-
-import { FiEdit3 } from "react-icons/fi";
-import { FaDeleteLeft } from "react-icons/fa6";
 
 import DropdownSearch from "../../components/dropdownSearch";
 import QuestionSection from "../../components/questionSection";
@@ -28,9 +26,8 @@ import {
 import { optionsKeywords, validationKeywords } from "../../constants/survey";
 
 const QuestionaryCreation: React.FC = () => {
-
-  const [showInfo, setShowInfo] = useState<boolean>(true)
-  const { surveyCode } = useParams()
+  const [showInfo, setShowInfo] = useState<boolean>(true);
+  const { surveyCode } = useParams();
 
   const emptyQuestionStructure: QuestionStructure = {
     text: "",
@@ -45,12 +42,12 @@ const QuestionaryCreation: React.FC = () => {
     max: 0,
   };
 
-  const [survey, setSurvey] = useState<surveyDetailsStructure|null>(null)
+  const [survey, setSurvey] = useState<surveyDetailsStructure | null>(null);
   const [questions, setQuestions] = useState<QuestionStructure[]>([]);
   const [question, setQuestion] = useState<QuestionStructure>(
     structuredClone(emptyQuestionStructure)
   );
-  const [disabled, setDisabled] = useState<boolean>(false)
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const [questionTypes, setQuestionTypes] = useState<QuestionTypeStructure[]>(
     []
@@ -66,25 +63,23 @@ const QuestionaryCreation: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [actionIndex, setActionIndex] = useState<number>(-1);
   const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
-  const [deletedQuestionIds, setDeletedQuestionIds] = useState<number[]>([])
-
+  const [deletedQuestionIds, setDeletedQuestionIds] = useState<number[]>([]);
 
   useEffect(() => {
-
-    setTimeout(()=>setShowInfo(false), 5000)
+    setTimeout(() => setShowInfo(false), 5000);
 
     axiosInterceptor({
       method: server.getSurveyAndQuestionary.method,
       url: server.getSurveyAndQuestionary.url + `/${surveyCode}`,
     })
       .then((res) => {
-        setSurvey(res?.survey ?? null)
-        setQuestions(res?.questionary ?? [])
+        setSurvey(res?.survey ?? null);
+        setQuestions(res?.questionary ?? []);
       })
       .catch((err) => {
         toast.error(err.message);
       });
-    
+
     axiosInterceptor({
       method: server.getQuestionTypes.method,
       url: server.getQuestionTypes.url,
@@ -108,12 +103,12 @@ const QuestionaryCreation: React.FC = () => {
       });
   }, []);
 
-  const handleSidebarClosure = ():void =>{
-    setSelectedQuestionType(null)
-    setSelectedFileType(null)
-    setQuestion(structuredClone(emptyQuestionStructure))
-    setSidebarOpen(false)
-    setActionIndex(-1)
+  const handleSidebarClosure = (): void => {
+    setSelectedQuestionType(null);
+    setSelectedFileType(null);
+    setQuestion(structuredClone(emptyQuestionStructure));
+    setSidebarOpen(false);
+    setActionIndex(-1);
     setRenderDropdown((prev) => prev + 1);
   };
 
@@ -173,7 +168,7 @@ const QuestionaryCreation: React.FC = () => {
 
   const handleQuestionValidationChange = (checked: boolean): void => {
     setQuestion((prev) => {
-      console.log(typeof(checked))
+      console.log(typeof checked);
       return { ...prev, validation: checked };
     });
   };
@@ -259,12 +254,12 @@ const QuestionaryCreation: React.FC = () => {
       }
     });
 
-    setQuestions((prev) =>{ 
-      if(actionIndex >= 0){
-        prev[actionIndex] = question
-        return [...prev]
+    setQuestions((prev) => {
+      if (actionIndex >= 0) {
+        prev[actionIndex] = question;
+        return [...prev];
       }
-      return [...prev, question]
+      return [...prev, question];
     });
 
     setQuestion(structuredClone(emptyQuestionStructure));
@@ -275,75 +270,50 @@ const QuestionaryCreation: React.FC = () => {
     setActionIndex(-1);
   };
 
-  const stageQuestionEdit = (selectedQuestion:QuestionStructure , index:number):void => {
+  useEffect(() => {
+    console.log(question);
+  }, [question]);
 
-    flushSync(() => {
-      
-      setSelectedQuestionType(questionTypes.filter((elem=>elem.id === selectedQuestion.questionTypeId))?.[0] ?? null)
-      setSelectedFileType(fileTypes.filter((elem=>elem.id === selectedQuestion.fileTypeId))?.[0] ?? null)
-      setQuestion(selectedQuestion)
-      setActionIndex(index)
-      setSidebarOpen(true)
-
-    })
-    setRenderDropdown(prev=> prev+1)
-  };
-
-  useEffect(()=>{
-    console.log(question)
-  }, [question])
-
-  const stageQuestionDelete = (index:number):void => {
-      setActionIndex(index)
-      setDeleteConfirmation(true)
-  };
-
-  const questionDelete = ():void => {
-
-    setQuestions(prev=>{      
-      var questionId = prev.splice(actionIndex, 1)?.[0].id ?? 0
-      if(questionId){
-        setDeletedQuestionIds(prevDeleted=>[...prevDeleted, questionId])
+  const questionDelete = (): void => {
+    setQuestions((prev) => {
+      var questionId = prev.splice(actionIndex, 1)?.[0].id ?? 0;
+      if (questionId) {
+        setDeletedQuestionIds((prevDeleted) => [...prevDeleted, questionId]);
       }
-      return [...prev]
-    })
-    setDeleteConfirmation(false)
-
+      return [...prev];
+    });
+    setDeleteConfirmation(false);
   };
-
 
   // deleteConfirmation
 
-  const handleQuestionaryFinalSave = ():void =>{
+  const handleQuestionaryFinalSave = (): void => {
+    setDisabled(true);
 
-    setDisabled(true)
-
-    const updateQuestionaryPayload : updateQuestionaryPayloadStructure = {
-      surveyId:survey?.id ?? 0,
+    const updateQuestionaryPayload: updateQuestionaryPayloadStructure = {
+      surveyId: survey?.id ?? 0,
       questionary: questions,
-      deletedQuestionIds
-    }
+      deletedQuestionIds,
+    };
 
     axiosInterceptor({
       method: server.updateQuestionary.method,
       url: server.updateQuestionary.url,
-      data: updateQuestionaryPayload
+      data: updateQuestionaryPayload,
     })
       .then(() => {
         toast.success("Questionary Saved");
-        setDisabled(false)
+        setDisabled(false);
       })
       .catch((err) => {
         toast.error(err.message);
-        setDisabled(false)
+        setDisabled(false);
       });
   };
 
   return (
     <div className="min-h-screen creamBackground relative">
-
       <div className="w-full p-4 max-h-screen overflow-y-auto">
-
         {showInfo ? (
           <>
             {survey?.active && (
@@ -353,20 +323,22 @@ const QuestionaryCreation: React.FC = () => {
             )}
 
             <div className="alert w-100 alert-primary rounded-0" role="alert">
-              The respondent's email will always be included as a required field in the survey form. As the survey creator, you don’t need to manually add it—it will automatically be present when respondents fill out the form.
+              The respondent's email will always be included as a required field
+              in the survey form. As the survey creator, you don’t need to
+              manually add it—it will automatically be present when respondents
+              fill out the form.
             </div>
           </>
-        ):(
+        ) : (
           <div className="w-full flex justify-end pb-3">
-            <IoMdInformationCircle className="text-3xl" onClick={()=>setShowInfo(true)}/>
+            <IoMdInformationCircle
+              className="text-3xl"
+              onClick={() => setShowInfo(true)}
+            />
           </div>
         )}
 
-        <div className="w-full flex items-end justify-between">
-          <h1 className="mainFont">
-            <span className="me-1 text-4xl">Questionary <span className="text-2xl">({survey?.surveyName ?? ""})</span></span>
-          </h1>
-
+        <div className="w-full flex items-end justify-end">
           <button
             className="appBackgroundColor p-1.5 pb-2 font-medium text-white flex mb-2.5"
             onClick={() => setSidebarOpen(true)}
@@ -376,7 +348,79 @@ const QuestionaryCreation: React.FC = () => {
           </button>
         </div>
 
-        <div className="w-100 pt-3 ps-3">
+        <div className="min-h-screen bg-slate-100 p-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="z-20 w-full">
+              <div className="max-w-6xl mx-auto">
+                <header className="bg-white shadow p-4 mb-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-center">
+                    <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">
+                      {survey?.surveyName ? `${survey.surveyName}` : ""}
+                    </h1>
+                    <div className="flex space-x-3"></div>
+                  </div>
+                </header>
+              </div>
+            </div>
+
+            <div className="bg-white shadow overflow-hidden mb-6">
+              <div className="px-4 py-5 sm:px-6">
+                <div className="mb-4">
+                  <label className="block text-lg font-medium appTextColor">
+                    Respondent Email
+                    <span className="text-red-500"> *</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="mt-2 w-full px-6 py-3 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your email"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white shadow overflow-hidden mb-6">
+              <div className="px-4 py-5 sm:px-6">
+                <h2 className="text-lg font-medium appTextColor">
+                  Survey Questions
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Please answer all required questions.
+                </p>
+              </div>
+              <div>
+                {questions.map((elem, index) => (
+                  <div className="border-b-2 border-b-gray-200">
+                  <span className="w-full flex justify-end ">
+                    <FaDeleteLeft
+                      className="text-xl text-red-600 hover:text-red-700 cursor-pointer me-3 mt-3"
+                      onClick={() => {
+                        setActionIndex(index);
+                        setDeleteConfirmation(true);
+                      }}
+                    />
+                  </span>
+                    <QuestionSection
+                      key={"question" + index}
+                      index={index}
+                      text={elem.text}
+                      questionType={elem?.questionType || ""}
+                      fileType={elem?.fileType || ""}
+                      options={elem.options}
+                      required={elem.required}
+                      onChange={(res: string) => {
+                        console.log(res);
+                      }}
+                      questionAlignment={survey?.surveyAlignment ?? ""}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="w-100 pt-3 ps-3">
           {questions.map((elem, index) => (
             <>
               <div className="w-full flex justify-end pe-2">
@@ -401,25 +445,24 @@ const QuestionaryCreation: React.FC = () => {
               />
             </>
           ))}
-        </div>
-        <div className="h-14"/>
+        </div> */}
+        <div className="h-14" />
       </div>
 
-      
       <div className="absolute bottom-0 w-full px-4 pb-4 creamBackground">
-          {!sidebarOpen && questions.length > 0 && (
-              <button
-                disabled={disabled}
-                className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-full"
-                onClick={handleQuestionaryFinalSave}
-              >
-                {disabled ? (
-                  <div className="spinner-border spinner-border-sm text-white"></div>
-                ) : (
-                  <span>Save Questionary</span>
-                )}
-              </button>
+        {!sidebarOpen && questions.length > 0 && (
+          <button
+            disabled={disabled}
+            className="bg-slate-950 text-white text-lg px-md-12 px-8 py-3 w-full"
+            onClick={handleQuestionaryFinalSave}
+          >
+            {disabled ? (
+              <div className="spinner-border spinner-border-sm text-white"></div>
+            ) : (
+              <span>Save Questionary</span>
             )}
+          </button>
+        )}
       </div>
 
       {/* ADD QUESTION */}
@@ -635,7 +678,6 @@ const QuestionaryCreation: React.FC = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

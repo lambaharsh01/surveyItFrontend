@@ -15,10 +15,9 @@ import { MdAddToPhotos } from "react-icons/md";
 import { FiEdit3 } from "react-icons/fi";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { LuLogOut } from "react-icons/lu";
-
+import { FaRegCopy } from "react-icons/fa6";
 
 const Dashboard: React.FC = () => {
-  
   const navigate = useNavigate();
   const [surveys, setSurveys] = useState<surveyDetailsStructure[]>([]);
   const [logoutIsActive, setLogoutIsActive] = useState<boolean>(false);
@@ -33,25 +32,23 @@ const Dashboard: React.FC = () => {
   const logOut = () => {
     localStorage.setItem(localStorageItems.token, "");
     navigate(client.signIn, { replace: true });
-  }
+  };
 
   useEffect(() => {
     fetchSurveys(true);
   }, []);
-  
-  const getBasePage= ():void=>{
-    flushSync(()=>{
-      setSurveys([])
-      setHasMore(true)
-      setPage(0)
-    })
-    fetchSurveys(true);
-  }
 
+  const getBasePage = (): void => {
+    flushSync(() => {
+      setSurveys([]);
+      setHasMore(true);
+      setPage(0);
+    });
+    fetchSurveys(true);
+  };
 
   const fetchSurveys = (omitEmpty: boolean): void => {
-
-    const atPage = omitEmpty ? 0 : page
+    const atPage = omitEmpty ? 0 : page;
 
     axiosInterceptor({
       method: server.getSurveys.method,
@@ -68,7 +65,23 @@ const Dashboard: React.FC = () => {
           setPage(1);
         } else {
           setPage((prev) => prev + 1);
-          setSurveys((prev) => [...prev, ...res.data]);
+          
+          setSurveys((prev) => {
+
+            const rawArray: surveyDetailsStructure[] = [...prev, ...res.data]
+            const uniqueSurveyIds: Set<number> = new Set<number>();
+            const uniqueSurveys: surveyDetailsStructure[] = [] 
+            
+            for(const survey of  rawArray) {
+              if(!survey.id) continue;
+              if(uniqueSurveyIds.has(survey.id)) continue;
+
+              uniqueSurveyIds.add(survey.id);
+              uniqueSurveys.push(survey);
+            }
+
+            return uniqueSurveys
+          });
         }
       })
       .catch((err) => {
@@ -83,7 +96,7 @@ const Dashboard: React.FC = () => {
       method: server.deleteSurvey.method,
     })
       .then(() => {
-        getBasePage()
+        getBasePage();
       })
       .catch(() => {
         toast.error("Something Went Wrong");
@@ -93,50 +106,36 @@ const Dashboard: React.FC = () => {
     setDeleteConfirmation(false);
   };
 
-
-
-
-
-  // const surveys: surveyDetailsStructure[] = [
-  //   {
-  //     id:1,
-  //     surveyCode:"123",
-  //     surveyName:"Name",
-  //     surveyDescription:"discription",
-  //     surveyTargetAudience:"target",
-  //     surveyAlignment:"alignment",
-  //     surveyColorTheme:"color",
-  //     allowMultipleSubmissions:true,
-  //     activeFrom:"from",
-  //     activeTo:"to",
-  //     createdAt:"21-03-2024",
-  //     active:true,
-  //     responses:5
-
-  //   }
-
-  // ];
+  const copyToClipboard = (surveyCode: string): void => {
+    const currentUrl: string = window?.location?.href;
+    const formUrl: string = currentUrl.replace("dashboard", surveyCode);
+    navigator.clipboard
+      .writeText(formUrl)
+      .then(() => toast.success("Copied to clipboard!"))
+      .catch((err) => console.error("Failed to copy: ", err));
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 p-4">
-
       <div className="max-w-6xl mx-auto">
-      <header className="mb-4 flex justify-end">
-        <LuLogOut 
-          className="text-2xl font-extrabold"
-          onClick={()=>setLogoutIsActive(true)}
-        />
-      </header>
+        <header className="mb-4 flex justify-end">
+          <LuLogOut
+            className="text-2xl font-extrabold"
+            onClick={() => setLogoutIsActive(true)}
+          />
+        </header>
       </div>
 
       <div className="max-w-6xl mx-auto">
         <header className="bg-white shadow p-4 mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-center">
-            <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">Survey Dashboard</h1>
+            <h1 className="text-xl font-bold appTextColor mb-4 sm:mb-0">
+              Survey Dashboard
+            </h1>
             <div className="flex space-x-3">
-              <button 
+              <button
                 className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={() => navigate(client.surveyCreation)}
+                onClick={() => navigate(client.surveyCreation, { state: null })}
               >
                 Create Survey
               </button>
@@ -144,98 +143,144 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
-      <div className="overflow-x-auto">
-        <InfiniteScroll
-          dataLength={surveys.length}
-          next={() => {fetchSurveys(false)}}
-          hasMore={hasMore}
-          loader={
-            <div className="w-100 text-center mb-2">
-              <div className="spinner-border spinner-border text-slate-400"></div>
-            </div>
-          }
-        >
-          <div className="bg-white shadow overflow-hidden">
-            <div className="px-4 py-5 sm:px-6">
-              <h2 className="text-lg font-medium appTextColor">Survey Overview</h2>
-              <p className="mt-1 text-sm text-gray-500">Overview of your surveys and their response counts.</p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Survey Name
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created Date
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Responses
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {surveys.map((elem, index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium appTextColor">{elem.surveyName}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{elem.createdAt}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold ${elem.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800" }`}>
-                          {elem.active ? "active":"inactive"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {elem.responses}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex space-x-4">
-                            
-                          <RiFileExcel2Fill
-                            className="text-xl text-green-600 hover:text-green-700 cursor-pointer"
-                            // onClick={() => navigate(client.questionaryCreation + "/" + elem.surveyCode)}
-                          />
-                          <MdAddToPhotos
-                            className="text-xl text-blue-600 hover:text-blue-700 cursor-pointer"
-                            onClick={() => navigate(client.questionaryCreation + "/" + elem.surveyCode)}
-                          />
-                          <FiEdit3
-                            className="text-xl text-blue-400 hover:text-blue-500 cursor-pointer"
-                            // onClick={() => {
-                            //   setActionIndex(index);
-                            //   setSurvey(surveys[index]);
-                            //   setSidebarOpen(true);
-                            // }}
-                          />
-                          <FaDeleteLeft
-                            className="text-xl text-red-600 hover:text-red-700 cursor-pointer"
-                            onClick={() => {
-                              setActionIndex(index);
-                              setDeleteConfirmation(true);
-                            }}
-                          />
-                        </div>
-                      </td>
+        <div className="overflow-x-auto">
+          <InfiniteScroll
+            dataLength={surveys.length}
+            next={() => {
+              fetchSurveys(false);
+            }}
+            hasMore={hasMore}
+            loader={
+              <div className="w-100 text-center mb-2">
+                <div className="spinner-border spinner-border text-slate-400"></div>
+              </div>
+            }
+          >
+            <div className="bg-white shadow overflow-hidden">
+              <div className="px-4 py-5 sm:px-6">
+                <h2 className="text-lg font-medium appTextColor">
+                  Survey Overview
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Overview of your surveys and their response counts.
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Survey Name
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Created Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Status
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Responses
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Action
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {surveys.map((elem, index) => (
+                      <tr key={index}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium appTextColor">
+                            {elem.surveyName}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-500">
+                            {elem.createdAt}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold ${
+                              elem.active
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {elem.active ? "active" : "inactive"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {elem.responses}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex space-x-4">
+                            <FaRegCopy
+                              className="text-xl text-gray-600 hover:gray-green-700 cursor-pointer"
+                              onClick={() =>
+                                copyToClipboard(elem?.surveyCode ?? "")
+                              }
+                            />
+                            <RiFileExcel2Fill
+                              className="text-xl text-green-600 hover:text-green-700 cursor-pointer"
+                              onClick={() =>
+                                navigate(
+                                  client.viewSurveyResponses +
+                                    "/" +
+                                    elem.surveyCode
+                                )
+                              }
+                            />
+                            <MdAddToPhotos
+                              className="text-xl text-blue-600 hover:text-blue-700 cursor-pointer"
+                              onClick={() =>
+                                navigate(
+                                  client.questionaryCreation +
+                                    "/" +
+                                    elem.surveyCode
+                                )
+                              }
+                            />
+                            <FiEdit3
+                              className="text-xl text-blue-400 hover:text-blue-500 cursor-pointer"
+                              onClick={() =>
+                                navigate(client.surveyCreation, { state: elem })
+                              }
+                            />
+                            <FaDeleteLeft
+                              className="text-xl text-red-600 hover:text-red-700 cursor-pointer"
+                              onClick={() => {
+                                setActionIndex(index);
+                                setDeleteConfirmation(true);
+                              }}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </InfiniteScroll>
-      </div> 
+          </InfiniteScroll>
+        </div>
       </div>
-      
+
       {logoutIsActive && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
           <div className="bg-white p-6 w-96 shadow-lg">
@@ -250,17 +295,13 @@ const Dashboard: React.FC = () => {
               >
                 Cancel
               </button>
-              <button
-                onClick={logOut}
-                className="px-4 py-2 appBackgroundColor"
-              >
+              <button onClick={logOut} className="px-4 py-2 appBackgroundColor">
                 Logout
               </button>
             </div>
           </div>
         </div>
       )}
-
 
       {deleteConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
@@ -286,7 +327,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

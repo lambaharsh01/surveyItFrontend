@@ -9,7 +9,7 @@ export interface SurveyPropsInterface {
   questions: Question[];
   onSubmit: (responses: { question: string; rating: number }[]) => void;
 }
-  
+
 export type CheckboxPropInterface = {
   options: string[];
   index: number;
@@ -19,9 +19,10 @@ export type CheckboxPropInterface = {
 };
 
 export type SelectsPropInterface = {
-  options: string[];
+  options: string[] | number[];
   index: number;
   onChange: (selected: string) => void;
+  value?: string;
 };
 
 export interface QuestionSectionPropInterface {
@@ -31,20 +32,16 @@ export interface QuestionSectionPropInterface {
   fileType: string;
   options: string[];
   required: boolean;
-  questionAlignment : string;
-  onChange: (data:string) => void;
+  questionAlignment: string;
+  onChange: (data: string) => void;
 }
 
 export interface StarsPropInterface {
   questionAlignment: string;
-  onChange: (data:string) => void;
+  onChange: (data: string) => void;
 }
-
 
 export interface FilesPropInterface {
-    fileType:string;
-    onChange: (base64: string) => void;
+  fileType: string;
+  onChange: (base64: string) => void;
 }
-
-
-

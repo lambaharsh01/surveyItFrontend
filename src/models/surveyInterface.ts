@@ -24,7 +24,7 @@ export interface FileTypeStructure {
 }
 
 export interface QuestionStructure {
-  id?:number;
+  id?: number;
   text: string;
   questionTypeId: number | null;
   questionType: string | null;
@@ -53,17 +53,14 @@ export interface surveyDetailsStructure {
   responses?: number;
 }
 
-
 export interface updateQuestionaryPayloadStructure {
-  surveyId: number
-  questionary: QuestionStructure[]
-  deletedQuestionIds: number[]
+  surveyId: number;
+  questionary: QuestionStructure[];
+  deletedQuestionIds: number[];
 }
 
-
-
 export interface QuestionWithResponseStructure {
-  id:number;
+  id: number;
   text: string;
   questionTypeId: number | null;
   questionType: string | null;
@@ -74,7 +71,7 @@ export interface QuestionWithResponseStructure {
   validation: boolean;
   min: number;
   max: number;
-  response? : string;
+  response?: string;
 }
 
 export interface SurveyResponseStructure {
@@ -82,3 +79,10 @@ export interface SurveyResponseStructure {
   response?: string;
 }
 
+export interface GetResponseStructure {
+  responseSno: number;
+  respondentEmail: string;
+  question: string;
+  response: string | null;
+  submittedAt: string;
+}
